@@ -10,6 +10,8 @@ LogoDet-3K-Dataset: https://github.com/Wangjing1551/LogoDet-3K-Datas
 • Phase 1: Starting from a dataset of annotated images, design a proper
 experimental plan (training, validation and test set, evaluation protocol
 and metrics) suitable for designing.
+
 • Phase 2: Establish a baseline using pre-trained models as embeddings.
+
 • Phase 3: Refine the above-mentioned model with a suitable learning strategy for logo re-identification.
 
