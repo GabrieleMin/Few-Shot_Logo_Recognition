@@ -2,6 +2,32 @@ import os
 import random
 from itertools import cycle
 
+"""
+##########################################################
+HOW TO USE THIS CLASS:
+
+1. Initialization:
+   extract_batch = FewShotIterator(test_list, n_shot)
+   --> Initializes the class with the full test_list and shot count.
+
+2. Usage (The class instance is callable):
+   task_data = extract_batch()
+   --> At each call, the function returns a dictionary with the following data:
+
+   {
+       "brand_name":  selected_brand_name,   # Chosen sequentially (circularly)
+       "support_set": support_set_list,      # Randomly selected images from the current brand
+       "query_set":   query_set_list         # All images in 'test_list' MINUS the 'support_set'
+   }
+
+KEY BEHAVIORS:
+- The brand selection iterates sequentially and restarts when finished (Circular).
+- The support set is chosen randomly for that brand.
+- The query set always represents the global rest of the dataset.
+##########################################################
+"""
+
+
 class FewShotIterator:
     def __init__(self, file_list, n_shot):
         """
