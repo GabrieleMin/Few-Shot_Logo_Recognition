@@ -1,2 +1,7 @@
 LogoDet-3K
 __pycache__
+.DS_Store
+**/.DS_Store
+checkpoints/
+checkpoints_contrastive/
+checkpoints_triplet/
