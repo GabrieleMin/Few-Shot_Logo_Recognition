@@ -1,0 +1,9 @@
+Contrastive Loss,,,,,,,
+Model,Batch size,Margin,Freeze,LR,Train Loss ,Val Loss ,Note
+ResNet50,32,1.0,4,"1,00E-04",0.00,0.00,Failed. Margin too high; Loss collapsed to zero immediately. The model failed to learn.
+ResNet50,32,0.2,4,"1,00E-04","0,1083","0,229",Improved. Loss is non-zero. Training is stable.
+ResNet50,32,,5,"1,00E-04","0,2474","0,2447",Baseline. Results worse than Freeze 4.
+ResNet50,32,0.2,3,"1,00E-04","0,1047","0,2183",Best result (previous). Small overfitting observed.
+ResNet50,8,0.2,0,"1,00E-05","0,1646","0,1985",BEST MODEL (Epoch 10)
+ResNet50,8,0.2,0,"1,00E-05",,"0,2037",Epoch 15: Early signs of overfitting
+ResNet50,8,0.2,0,"1,00E-05","0,1294","0,2046","Epoch 20: Overfitting confirmed (Train Loss decreased, Val Loss increased)."
