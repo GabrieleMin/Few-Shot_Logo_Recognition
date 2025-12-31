@@ -18,9 +18,9 @@ except ImportError:
 
 
 from configs.config import Config
-from my_dataset import getPathsSetsByBrand 
+from Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand
 from Implementation_ResNet50 import LogoResNet50
-from dataset_triplet import DatasetTriplet
+from Contrastive_Triplet_test.Triplet_impl import DatasetTriplet
 
 def train_triplet():
  
