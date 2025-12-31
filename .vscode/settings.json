@@ -1,0 +1,6 @@
+{
+    "python.analysis.extraPaths": [
+        "./PY_script/Metric",
+        "./PY_script/Utilis_function"
+    ]
+}

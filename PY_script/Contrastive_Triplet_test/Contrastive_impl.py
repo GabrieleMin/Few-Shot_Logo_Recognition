@@ -1,4 +1,4 @@
-from dependencies import ET, Image, Dataset, random, defaultdict,torch,SEED
+from Contrastive_Triplet_test.dependencies import ET, Image, Dataset, random, defaultdict,torch,SEED
 random.seed(SEED)
 torch.manual_seed(SEED)
 

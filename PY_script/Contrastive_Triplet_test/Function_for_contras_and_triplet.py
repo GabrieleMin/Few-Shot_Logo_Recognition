@@ -1,4 +1,4 @@
-from dependencies import patches,plt,random,torch,random_split,Image,os,glob,SEED
+from Contrastive_Triplet_test.dependencies import patches,plt,random,torch,random_split,Image,os,glob,SEED
 random.seed(SEED)
 torch.manual_seed(SEED)
 

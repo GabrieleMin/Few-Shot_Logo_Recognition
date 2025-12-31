@@ -7,8 +7,8 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from Extract_shot__logo import FewShotIterator
 from Metric_central_implementation import MetricEvaluator
-from my_dataset import getPathsSetsByBrand  # function for train/val/test split
-from my_dataset import DatasetTest  # function for train/val/test split
+from Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand  # function for train/val/test split
+from Contrastive_Triplet_test.Test_dataset import DatasetTest  # function for train/val/test split
 
 # ============================
 # CONFIG

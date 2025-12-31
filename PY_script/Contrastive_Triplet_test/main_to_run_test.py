@@ -3,7 +3,7 @@
 ########################################################################################################################################
 
 from Contrastive_impl import DatasetContrastive
-from dependencies import getPathsSetsByBrand, show_contrastive_with_bboxes, random, torch, transforms,SEED
+from Contrastive_Triplet_test.dependencies import getPathsSetsByBrand, show_contrastive_with_bboxes, random, torch, transforms,SEED
 random.seed(SEED)
 torch.manual_seed(SEED)
 
