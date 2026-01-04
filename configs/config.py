@@ -19,6 +19,7 @@ class Config:
 
     # 2. DATASET PATH
     dataset_root = "LogoDet-3K/LogoDet-3K"
+    csv_index_path = "LogoDet-3K"
 
     # Split Ratios: 70% Train, 20% Validation 
     train_split_ratio = 0.7
