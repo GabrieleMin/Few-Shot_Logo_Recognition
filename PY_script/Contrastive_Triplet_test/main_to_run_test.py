@@ -2,10 +2,12 @@
 # ALCUNI BRANDS SEMBRANO ESSERE DUPLICATI EX LogoDet-3K\LogoDet-3K\Leisure\stein world-1 E LogoDet-3K\LogoDet-3K\Leisure\stein world-2 #
 ########################################################################################################################################
 
-from Contrastive_impl import DatasetContrastive
-from Contrastive_Triplet_test.dependencies import getPathsSetsByBrand, show_contrastive_with_bboxes, random, torch, transforms,SEED
-random.seed(SEED)
-torch.manual_seed(SEED)
+from PY_script.Contrastive_Triplet_test.Contrastive_dataset import DatasetContrastive
+from PY_script.Contrastive_Triplet_test.dependencies import getPathsSetsByBrand, show_contrastive_with_bboxes, random, torch, transforms
+from configs.config import Config
+
+random.seed(Config.seed)
+torch.manual_seed(Config.seed)
 
 
  # DATASET that takes the list of files for the dataset, 

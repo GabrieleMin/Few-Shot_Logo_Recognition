@@ -34,6 +34,11 @@ class Config:
     pretrained = True     
     embedding_dim = 128    
 
+    # TRAINED MODEL PATH
+    trained_model_path = ""
+
+    # Prediciton threadshold used to decide if two logos are the same during inference
+    prediciton_threashold = 0.5
  
     
    

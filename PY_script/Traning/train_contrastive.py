@@ -17,10 +17,12 @@ import torch.optim as optim
 from torch.utils.data import DataLoader
 from torchvision import transforms
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 from configs.config import Config
 from Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand
-from Contrastive_Triplet_test.Contrastive_impl import DatasetContrastive
-from Implementation_ResNet50 import LogoResNet50 
+from PY_script.Contrastive_Triplet_test.Contrastive_dataset import DatasetContrastive
+from PY_script.Utilis_function.Implementation_ResNet50 import LogoResNet50
 
 def main():
     print(f"Starting training for: {Config.project_name}")

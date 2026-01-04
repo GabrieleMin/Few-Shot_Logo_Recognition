@@ -1,6 +1,8 @@
-from Contrastive_Triplet_test.dependencies import patches,plt,random,torch,random_split,Image,os,glob,SEED
-random.seed(SEED)
-torch.manual_seed(SEED)
+from PY_script.Contrastive_Triplet_test.dependencies import patches,plt,random,torch,random_split,Image,os,glob
+from configs.config import Config
+
+random.seed(Config.seed)
+torch.manual_seed(Config.seed)
 
 def getPathsSetsByBrand(dir, val_split, test_split, total_set_size=None, min_images_per_brand=2):
     category_list = []
@@ -17,7 +19,7 @@ def getPathsSetsByBrand(dir, val_split, test_split, total_set_size=None, min_ima
     val_size = int(len(brand_list) * val_split)
     train_size = len(brand_list) - test_size - val_size
 
-    generator = torch.Generator().manual_seed(SEED)
+    generator = torch.Generator().manual_seed(Config.seed)
     train_subset, val_subset, test_subset = random_split(brand_list, [train_size, val_size, test_size], generator=generator)
     
     # random_split return a datase, not a list. To get the list of strings needed to pass to the Dataset we do the following:

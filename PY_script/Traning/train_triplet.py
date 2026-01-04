@@ -16,11 +16,12 @@ try:
 except ImportError:
     def tqdm(iterator, desc=""): return iterator
 
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from configs.config import Config
 from Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand
-from Implementation_ResNet50 import LogoResNet50
-from Contrastive_Triplet_test.Triplet_impl import DatasetTriplet
+from PY_script.Utilis_function.Implementation_ResNet50 import LogoResNet50
+from PY_script.Contrastive_Triplet_test.Triplet_dataset import DatasetTriplet
 
 def train_triplet():
  
@@ -66,7 +67,7 @@ def train_triplet():
     # 2. Model
     print("Model Initialization (Triplet)...")
     # Using Freeze=0 
-    model = LogoResNet50(embedding_dim=Config.embedding_dim, pretrained=Config.pretrained, num_of_freeze_layer=0) 
+    model = LogoResNet50(embedding_dim=Config.embedding_dim, pretrained=Config.pretrained, num_of_freeze_layer=Config.freeze_layers) 
     model = model.to(device)
 
     # 3. Loss e Optimizer

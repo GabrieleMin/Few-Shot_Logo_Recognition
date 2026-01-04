@@ -1,6 +1,8 @@
-from Contrastive_Triplet_test.dependencies import SEED,ET,torch,Dataset,Image,random
-random.seed(SEED)
-torch.manual_seed(SEED)
+from PY_script.Contrastive_Triplet_test.dependencies import ET,torch,Dataset,Image,random
+from configs.config import Config
+
+random.seed(Config.seed)
+torch.manual_seed(Config.seed)
 
 
 
