@@ -39,18 +39,18 @@ def process_xml(xml_path):
     print(f"Processed {xml_path}")
 
 # # Walk through the dataset
-# for category in os.listdir(xml_root_folder):
-#     category_path = os.path.join(xml_root_folder, category)
-#     if not os.path.isdir(category_path):
-#         continue
-#     for brand in os.listdir(category_path):
-#         brand_path = os.path.join(category_path, brand)
-#         if not os.path.isdir(brand_path):
-#             continue
-#         for xml_file in os.listdir(brand_path):
-#             if xml_file.endswith('.xml'):
-#                 xml_path = os.path.join(brand_path, xml_file)
-#                 process_xml(xml_path)
+for category in os.listdir(xml_root_folder):
+    category_path = os.path.join(xml_root_folder, category)
+    if not os.path.isdir(category_path):
+        continue
+    for brand in os.listdir(category_path):
+        brand_path = os.path.join(category_path, brand)
+        if not os.path.isdir(brand_path):
+            continue
+        for xml_file in os.listdir(brand_path):
+            if xml_file.endswith('.xml'):
+                xml_path = os.path.join(brand_path, xml_file)
+                process_xml(xml_path)
 
 # Save brand -> index mapping to CSV
 csv_path = os.path.join(write_to_csv_path, "brand_to_index.csv")
