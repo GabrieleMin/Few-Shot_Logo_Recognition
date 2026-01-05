@@ -4,89 +4,98 @@ from configs.config import Config
 random.seed(Config.seed)
 torch.manual_seed(Config.seed)
 
-def getPathsSetsByBrand(dir, val_split, test_split, total_set_size=None, min_images_per_brand=2):
-    category_list = []
-    brand_list = []
+def getPathsSetsByBrand(root_dir, val_split, total_set_size=None, min_images_per_brand=2):
 
-    for category in os.listdir(dir):
-        category_path = os.path.join(dir, category)
-        for brand in os.listdir(category_path):
-           brand_path = os.path.join(category_path, brand)
-           brand_list.append(brand_path)
-        category_list.append(category_path)
+    train_val_path = os.path.join(root_dir, 'train_val')
+    test_path = os.path.join(root_dir, 'test')
 
-    test_size = int(len(brand_list) * test_split)
-    val_size = int(len(brand_list) * val_split)
-    train_size = len(brand_list) - test_size - val_size
+    # Helper to collect brand folders from a root
+    def get_brands_from_dir(base_dir):
+        brands = []
+        if not os.path.exists(base_dir):
+            print(f"Warning: {base_dir} not found.")
+            return brands
+            
+        for category in os.listdir(base_dir):
+            cat_path = os.path.join(base_dir, category)
+            if os.path.isdir(cat_path):
+                for brand in os.listdir(cat_path):
+                    brand_full_path = os.path.join(cat_path, brand)
+                    if os.path.isdir(brand_full_path):
+                        brands.append(brand_full_path)
+        return brands
+
+    train_val_brands = get_brands_from_dir(train_val_path)
+    test_brand_list = get_brands_from_dir(test_path)
+
+    # Split train_val into Train and Val
+    val_size = int(len(train_val_brands) * val_split)
+    train_size = len(train_val_brands) - val_size
 
     generator = torch.Generator().manual_seed(Config.seed)
-    train_subset, val_subset, test_subset = random_split(brand_list, [train_size, val_size, test_size], generator=generator)
+    train_subset, val_subset = random_split(train_val_brands, [train_size, val_size], generator=generator)
     
-    # random_split return a datase, not a list. To get the list of strings needed to pass to the Dataset we do the following:
-    train_brand_list = [brand_list[i] for i in train_subset.indices]
-    val_brand_list   = [brand_list[i] for i in val_subset.indices]
-    test_brand_list  = [brand_list[i] for i in test_subset.indices]
-
+    train_brand_list = [train_val_brands[i] for i in train_subset.indices]
+    val_brand_list   = [train_val_brands[i] for i in val_subset.indices]
     train_data_list = []
     val_data_list = []
     test_data_list = []
 
     if total_set_size is not None:
-      images_per_brand = round(total_set_size / (len(train_brand_list) + len(val_brand_list) + len(test_brand_list)))
+        total_brands_available = len(train_brand_list) + len(val_brand_list) + len(test_brand_list)
+        images_per_brand = round(total_set_size / total_brands_available)
 
-      print(f"Number of brands in training set: {len(train_brand_list)}")
-      print(f"Number of brands in validation set: {len(val_brand_list)}")
-      print(f"Number of brands in test set: {len(test_brand_list)}")
-      print(f"images sampled per brand: {images_per_brand}")
+        if images_per_brand < min_images_per_brand:
+            print(f"Not enough images per brand ({images_per_brand}), downscaling brand sets to ensure {min_images_per_brand} images/brand.")
+            
+            # Calculate how many brands we can actually afford
+            new_total_brand_count = round(total_set_size / min_images_per_brand)
+            
+            # Maintain the ratio between train/val/test
+            # Since test is already separated, we calculate its ratio relative to the whole
+            total_orig = len(train_val_brands) + len(test_brand_list)
+            test_ratio = len(test_brand_list) / total_orig
+            
+            new_test_size = round(new_total_brand_count * test_ratio)
+            # Remaining goes to train_val, then split by val_split
+            new_train_val_size = new_total_brand_count - new_test_size
+            new_val_size = round(new_train_val_size * val_split)
+            new_train_size = new_train_val_size - new_val_size
 
-      if images_per_brand < min_images_per_brand:
-        # downscale the number of brands per set to guarantee min_images_per_brand
+            # Downsample the brand lists
+            train_brand_list = random.sample(train_brand_list, new_train_size)
+            val_brand_list = random.sample(val_brand_list, new_val_size)
+            test_brand_list = random.sample(test_brand_list, new_test_size)
+            
+            images_per_brand = min_images_per_brand
 
-        print(f"not enough images per brand, resizing sets")
+        # Helper to sample images from the finalized brand lists
+        def collect_images(brands, count):
+            paths = []
+            for brand in brands:
+                imgs = glob.glob(os.path.join(brand, '*.jpg'))
 
-        new_total_brand_size = round(total_set_size / min_images_per_brand)
-        new_val_brand_size = round(new_total_brand_size * val_split)
-        new_test_brand_size = round(new_total_brand_size * test_split)
-        new_train_brand_size = new_total_brand_size - new_val_brand_size - new_test_brand_size
+                if len(imgs) < min_images_per_brand:
+                    print(f"images are less than {min_images_per_brand} for this brand: {brand}")
+                
+                paths.extend(random.sample(imgs, min(count, len(imgs))))
+            return paths
 
-        train_brand_list = random.sample(train_brand_list, new_train_brand_size)
-        val_brand_list = random.sample(val_brand_list, new_val_brand_size)
-        test_brand_list = random.sample(test_brand_list, new_test_brand_size)
+        train_data_list = collect_images(train_brand_list, images_per_brand)
+        val_data_list = collect_images(val_brand_list, images_per_brand)
+        test_data_list = collect_images(test_brand_list, images_per_brand)
+        
+        print(f"Final Count - Train Brands: {len(train_brand_list)}, Val: {len(val_brand_list)}, Test: {len(test_brand_list)}")
+        print(f"Images per brand: {images_per_brand}")
 
-        print(f"Number of brands in training set: {len(train_brand_list)}")
-        print(f"Number of brands in validation set: {len(val_brand_list)}")
-        print(f"Number of brands in test set: {len(test_brand_list)}")
-
-        images_per_brand = min_images_per_brand
-        print(f"new images sampled per brand: {images_per_brand}")
-      
-      for brand in train_brand_list:
-        all_images = glob.glob(os.path.join(brand, '*.jpg'))
-        if images_per_brand > len(all_images):
-          print(f"images are less than {min_images_per_brand} for this brand: {brand}")
-        sampled_images = random.sample(all_images, min(images_per_brand, len(all_images)))
-        train_data_list.extend(sampled_images)
-
-      for brand in val_brand_list:
-        all_images = glob.glob(os.path.join(brand, '*.jpg'))
-        if images_per_brand > len(all_images):
-          print(f"images are less than {min_images_per_brand} for this brand: {brand}")
-        sampled_images = random.sample(all_images, min(images_per_brand, len(all_images)))
-        val_data_list.extend(sampled_images)
-
-      for brand in test_brand_list:
-        all_images = glob.glob(os.path.join(brand, '*.jpg'))
-        if images_per_brand > len(all_images):
-          print(f"images are less than {min_images_per_brand} for this brand: {brand}")
-        sampled_images = random.sample(all_images, min(images_per_brand, len(all_images)))
-        test_data_list.extend(sampled_images)
     else:
-      for brand in train_brand_list:
-        train_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
-      for brand in val_brand_list:
-        val_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
-      for brand in test_brand_list:
-        test_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
+        # No total_set_size limit: use all images from all available brands
+        for brand in train_brand_list:
+            train_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
+        for brand in val_brand_list:
+            val_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
+        for brand in test_brand_list:
+            test_data_list.extend(glob.glob(os.path.join(brand, '*.jpg')))
 
     return train_data_list, val_data_list, test_data_list
 
