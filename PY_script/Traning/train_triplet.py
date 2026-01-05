@@ -37,8 +37,7 @@ def train_triplet():
 
     train_files, val_files, test_files = getPathsSetsByBrand(
         Config.dataset_root, 
-        val_split=Config.val_split_ratio, 
-        test_split=test_ratio, 
+        val_split=Config.val_split_ratio,
         min_images_per_brand=2
     )
 

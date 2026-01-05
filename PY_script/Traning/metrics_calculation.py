@@ -157,7 +157,6 @@ def main():
     _, _, test_data_list = getPathsSetsByBrand(
         Config.dataset_root, 
         val_split=Config.val_split_ratio,
-        test_split=test_ratio,
         total_set_size=5000,
         min_images_per_brand=6
     )

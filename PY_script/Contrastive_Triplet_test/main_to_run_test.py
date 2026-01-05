@@ -26,7 +26,7 @@ def main():
     test_split = 1/10
     val_split = 1/10
 
-    train_data_list, val_data_list, test_data_list = getPathsSetsByBrand(dir, val_split, test_split, 1000, 15)
+    train_data_list, val_data_list, test_data_list = getPathsSetsByBrand(dir, val_split, 1000, 15)
 
     print(f"images in the training set: {len(train_data_list)}")
     print(f"images in the validation set: {len(val_data_list)}")

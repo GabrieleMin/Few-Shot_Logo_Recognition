@@ -34,8 +34,7 @@ def main():
     print("Loading dataset...")
     train_files, val_files, test_files = getPathsSetsByBrand(
         Config.dataset_root, 
-        val_split=Config.val_split_ratio, 
-        test_split=0.1,
+        val_split=Config.val_split_ratio,
         min_images_per_brand=2
     )
     print(f"Training files: {len(train_files)}")
