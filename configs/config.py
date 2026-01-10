@@ -18,7 +18,7 @@ class Config:
     seed = 42  # For reproducibility
 
     # 2. DATASET PATH
-    dataset_root = "LogoDet-3K/LogoDet-3K"
+    dataset_root = "LogoDet-3K/LogoDet-3K-divided"
     csv_index_path = "LogoDet-3K"
 
     # Split Ratios: 70% Train, 20% Validation 

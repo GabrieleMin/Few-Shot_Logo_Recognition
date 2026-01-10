@@ -20,7 +20,7 @@ from torchvision import transforms
 sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
 
 from configs.config import Config
-from Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand
+from Contrastive_Triplet_test.Function_for_contras_and_triplet import getTrainValPaths
 from PY_script.Contrastive_Triplet_test.Contrastive_dataset import DatasetContrastive
 from PY_script.Utilis_function.Implementation_ResNet50 import LogoResNet50
 
@@ -32,7 +32,7 @@ def main():
 
     # 1. DATA AND AUGMENTATION 
     print("Loading dataset...")
-    train_files, val_files, test_files = getPathsSetsByBrand(
+    train_files, val_files = getTrainValPaths(
         Config.dataset_root, 
         val_split=Config.val_split_ratio,
         min_images_per_brand=2

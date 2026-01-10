@@ -12,7 +12,7 @@ import torch.nn.functional as F
 from torch.utils.data import DataLoader
 from Extract_shot__logo import FewShotIterator
 from PY_script.Metric.Metric_central_implementation import MetricEvaluator
-from PY_script.Contrastive_Triplet_test.Function_for_contras_and_triplet import getPathsSetsByBrand  # function for train/val/test split
+from PY_script.Contrastive_Triplet_test.Function_for_contras_and_triplet import getTestPaths
 from PY_script.Contrastive_Triplet_test.Test_dataset import DatasetTest  # function for train/val/test split
 from PY_script.Utilis_function.Implementation_ResNet50 import LogoResNet50
 from configs.config import Config
@@ -151,12 +151,9 @@ def main():
 
     print("=== FEW-SHOT MODEL EVALUATION ===")
 
-    test_ratio = 1.0 - Config.train_split_ratio - Config.val_split_ratio
-
     # Load test set
-    _, _, test_data_list = getPathsSetsByBrand(
+    test_data_list = getTestPaths(
         Config.dataset_root, 
-        val_split=Config.val_split_ratio,
         total_set_size=5000,
         min_images_per_brand=6
     )

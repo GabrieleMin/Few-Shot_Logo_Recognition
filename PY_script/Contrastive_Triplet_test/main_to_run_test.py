@@ -2,8 +2,14 @@
 # ALCUNI BRANDS SEMBRANO ESSERE DUPLICATI EX LogoDet-3K\LogoDet-3K\Leisure\stein world-1 E LogoDet-3K\LogoDet-3K\Leisure\stein world-2 #
 ########################################################################################################################################
 
+import sys
+import os
+
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..', '..')))
+
 from PY_script.Contrastive_Triplet_test.Contrastive_dataset import DatasetContrastive
-from PY_script.Contrastive_Triplet_test.dependencies import getPathsSetsByBrand, show_contrastive_with_bboxes, random, torch, transforms
+from PY_script.Contrastive_Triplet_test.dependencies import random, torch, transforms
+from PY_script.Contrastive_Triplet_test.Function_for_contras_and_triplet import getTestPaths, getTrainValPaths, show_contrastive_with_bboxes
 from configs.config import Config
 
 random.seed(Config.seed)
@@ -22,11 +28,9 @@ torch.manual_seed(Config.seed)
 
 
 def main():
-    dir = "LogoDet-3K/LogoDet-3K"
-    test_split = 1/10
-    val_split = 1/10
 
-    train_data_list, val_data_list, test_data_list = getPathsSetsByBrand(dir, val_split, 1000, 15)
+    train_data_list, val_data_list = getTrainValPaths(Config.dataset_root, Config.val_split_ratio, 1000, 15)
+    test_data_list = getTestPaths(Config.dataset_root, 1000, 15)
 
     print(f"images in the training set: {len(train_data_list)}")
     print(f"images in the validation set: {len(val_data_list)}")
