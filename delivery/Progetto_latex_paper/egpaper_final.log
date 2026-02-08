@@ -1,10 +1,10 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  7 FEB 2026 12:45
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  8 FEB 2026 11:19
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
  %&-line parsing enabled.
-**"c:/Users/Lenovo/Downloads/cvpr2020AuthorKit (1)/cvpr2020AuthorKit/latex/egpaper_final.tex"
-(c:/Users/Lenovo/Downloads/cvpr2020AuthorKit (1)/cvpr2020AuthorKit/latex/egpaper_final.tex
+**c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex
+(c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
 (C:\Users\Lenovo\Desktop\altro\imp\tex/latex/base\article.cls
@@ -385,17 +385,17 @@ LaTeX Warning: There were multiply-defined labels.
 
  ) 
 Here is how much of TeX's memory you used:
- 10078 strings out of 474486
- 154652 string characters out of 5748911
+ 10080 strings out of 474486
+ 154642 string characters out of 5748911
  1945542 words of memory out of 5000000
  32185 multiletter control sequences out of 15000+600000
  581786 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,9n,79p,530b,499s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,79p,526b,499s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmri8a.pfb>
-Output written on egpaper_final.pdf (3 pages, 197166 bytes).
+Output written on egpaper_final.pdf (3 pages, 197586 bytes).
 PDF statistics:
- 83 PDF objects out of 1000 (max. 8388607)
- 21 named destinations out of 1000 (max. 500000)
+ 85 PDF objects out of 1000 (max. 8388607)
+ 23 named destinations out of 1000 (max. 500000)
  11 words of extra memory for PDF output out of 10000 (max. 10000000)
 

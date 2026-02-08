@@ -1,6 +1,6 @@
-PWD c:\Users\Lenovo\Downloads\cvpr2020AuthorKit (1)\cvpr2020AuthorKit\latex
+PWD c:\Users\Lenovo\Desktop\ProgettoFinale1\delivery\Progetto_latex_paper
 INPUT C:\Users\Lenovo\AppData\Local\MiKTeX\miktex\data\le\pdftex\pdflatex.fmt
-INPUT c:\Users\Lenovo\Downloads\cvpr2020AuthorKit (1)\cvpr2020AuthorKit\latex\egpaper_final.tex
+INPUT c:\Users\Lenovo\Desktop\ProgettoFinale1\delivery\Progetto_latex_paper\egpaper_final.tex
 OUTPUT egpaper_final.log
 INPUT C:\Users\Lenovo\Desktop\altro\imp\tex\latex\base\article.cls
 INPUT C:\Users\Lenovo\Desktop\altro\imp\tex\latex\base\article.cls
