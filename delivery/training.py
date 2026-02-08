@@ -568,7 +568,7 @@ The script:
 
 """
 
-import torch.nn.functional as F  # <--- IMPORTANTE: Serve per calcolare le distanze
+import torch.nn.functional as F  
 def save_plots(model, optimizer, train_losses, val_losses, val_f1_scores, val_thresholds, output_dir, train_transform, title_suffix="", params=None, unfreeze_epoch=None):
     fig = plt.figure(figsize=(20, 8))
     gs = fig.add_gridspec(2, 3, height_ratios=[1, 1])
