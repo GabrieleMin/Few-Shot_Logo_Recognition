@@ -6,6 +6,8 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{tabularx}
+\usepackage{float}
 
 % Include other packages here, before hyperref.
 
@@ -73,7 +75,7 @@ In this work, we address this challenge by implementing a Deep Metric Learning s
 \begin{figure}[!ht]
    \centering
 
-   \includegraphics[width=\linewidth]{1immintro.pdf}
+   \includegraphics[width=\linewidth]{imm/1immintro.pdf}
    
    \caption{Sample of images from LogoDet-3K}
 \end{figure}
@@ -91,16 +93,18 @@ For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which cu
 LogoDet-3K comprises 3,000 logo categories, with approximately 200,000 manually
  annotated objects distributed across 158,652 images. The dataset is hierarchically 
  organized into nine supercategories (Food, Clothes, Necessities, Others, Electronics, 
- Transportation, Leisure, Sports, and Medical). The dataset is inherently long-tailed, we can see that in figure 2, 
+ Transportation, Leisure, Sports, and Medical). The dataset is inherently long-tailed, we can see that in the figure below \ref{fig:2}, 
  some classes have a very large number of samples, while others (especially in the Medical 
  or Sports categories) have very few instances. This distribution faithfully reflects the 
- challenges of real-world scenarios.
+ challenges of real-world scenarios. In \ref{fig:2} the classes are grouped by macrocategory along the x-axis, and the number of images per class is shown on the y-axis. The red dots indicate the class with the most images for each macrocategory. We can see a significant imbalance between macrocategories, both in terms of the number of classes per macrocategory and the number of images per class.
+
  \begin{figure}[!ht]
    \centering
 
-   \includegraphics[width=\linewidth]{logodet3k_with_red_dots.pdf}
+   \includegraphics[width=\linewidth]{imm/logodet3k_with_red_dots.pdf}
    
    \caption{Distribution of the LogoDet-3K dataset by macro-category}
+   \label {fig:2}
 \end{figure}
 
 \subsection{Dataset Preprocessing and Partitioning}
@@ -191,40 +195,154 @@ The evolution of testing on Triplet Margin Loss provided critical insights into 
 Analysis of Model Iterations and Improvements: Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
 Data Augmentation: To mitigate early overfitting \ref{fig:41}, a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn affine-invariant features \ref{fig:42}.
 Optimization and Unfreezing: Transitioning from Adam to SGD yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" \ref{fig:43}. This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
-L2 Normalization and the "Scaling Problem": Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from 4.1 to 4.3. Introducing L2 normalization and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
+L2 Normalization and the "Scaling Problem": Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from \ref{fig:41} to \ref{fig:43}. Introducing L2 normalization and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
 Optimal Model Results \ref{fig:44}: The final configuration demonstrated the robustness required for Open-Set scenarios:
 Loss and F1-Score Curves: Constant convergence was observed, with Validation Loss stabilizing around 0.45. The F1-score reached a peak of 0.775; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
 Threshold Stability: Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around 1.18. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
 
 %todo: insert figures 4.1 to 4.4
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{img41.pdf}
-    \caption{todo}
+    \includegraphics[width=\linewidth]{imm/img41.pdf}
+    \caption{Early overfitting}
     \label{fig:41}
 \end{figure}
 
-\begin{figure}[h]
+\begin{table}[H]
     \centering
-    \includegraphics[width=\linewidth]{img42.pdf}
-    \caption{todo}
+    % Aumenta leggermente lo spazio verticale per non far toccare le linee
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Iperparametri di configurazione - Test 1}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:41}.}
+    \label{tab:config_1}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Batch Size & 32 \\
+        \hline
+        Margin & 1.0 \\
+        \hline
+        Learning Rate & 0.001 \\
+        \hline
+        Embedding Layer & Sequential (Linear $2048 \to 128$) \\
+        \hline
+        Freeze & 5 (Fixed) \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{imm/img42.pdf}
+    \caption{shifts, rotations, and color jitter implementation}
     \label{fig:42}
 \end{figure}
 
-\begin{figure}[h]
+\begin{table}[H]
     \centering
-    \includegraphics[width=\linewidth]{img43.pdf}
-    \caption{todo}
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:42}.}
+    \label{tab:config_2}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Dataset Size & 10000 \\
+        \hline
+        Batch Size & 64 \\
+        \hline
+        Margin & 1.0 \\
+        \hline
+        Learning Rate & $1.0 \times 10^{-3} \to 1.0 \times 10^{-4}$ (Decay factor: 0.1) \\
+        \hline
+        Weight Decay & True \\
+        \hline
+        Embedding Layer & MLP ($2048 \to 1024 \to \text{ReLU} \to 128$) \\
+        \hline
+        Freeze Strategy & $5 \to 4$ (Sblocco all'epoca 5) \\
+        \hline
+        Data Augmentation & Resize, Perspective ($p=0.3$), H-Flip ($p=0.3$), Rotation ($\pm 15^\circ$), Grayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{imm/img43.pdf}
+    \caption{backbone unfreezing "shock"}
     \label{fig:43}
 \end{figure}
 
-\begin{figure}[h]
+\begin{table}[H]
     \centering
-    \includegraphics[width=\linewidth]{img44.pdf}
-    \caption{todo}
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:43}.}
+    \label{tab:config_img43}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Optimizer & SGD (Momentum $= 0.9$) \\
+        \hline
+        Batch Size & 64 \\
+        \hline
+        Dataset Size & 10000 \\
+        \hline
+        Margin & 1.0 \\
+        \hline
+        Learning Rate & $5.0 \times 10^{-2}$ (Constant, Factor: 1) \\
+        \hline
+        Weight Decay & True \\
+        \hline
+        Embedding Layer & MLP ($2048 \to 1024 \to \text{ReLU} \to 128$) \\
+        \hline
+        Freeze Strategy & $5 \to 4$ (ep 5) $\to 5$ (ep 15) $\to 3$ (ep 22) \\
+        \hline
+        Data Augmentation & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{imm/img44.pdf}
+    \caption{Optimal Model Results}
     \label{fig:44}
 \end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:44}.}
+    \label{tab:config_img44}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Dataset Size & Full \\
+        \hline
+        Batch Size & 256 \\
+        \hline
+        Optimizer & SGD \\
+        \hline
+        Weight Decay & $0.0001$ \\
+        \hline
+        Margin & 1.0 \\
+        \hline
+        Learning Rate (Head) & $1.0 \times 10^{-1} \to 2.0 \times 10^{-2}$ (Decay Factor: 0.2) \\
+        \hline
+        Backbone LR Factor & $0.03$ (rispetto al LR della Head) \\
+        \hline
+        Embedding Layer & MLP ($2048 \to 256 \to \text{BatchNorm} \to \text{ReLU} \to \text{Dropout}(p=0.3) \to 128$) \\
+        \hline
+        Freeze Strategy & $4 \to 3$ (Sblocco all'epoca 15) \\
+        \hline
+        Data Augmentation & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
 
 
 \subsection{Contrastive Loss Analysis (Cosine)}
@@ -238,37 +356,141 @@ Optimal Model Results: The combination of Contrastive Loss and the previously op
 F1-Score and Convergence: As shown in Figure \ref{fig:433}, the validation F1-score peaked at 0.811, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy, which appears to be a more complex approach in this case.
 Threshold Stability: The distance threshold successfully stabilized at approximately 0.60. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
-    \includegraphics[width=\linewidth]{img431.pdf}
+    \includegraphics[width=\linewidth]{imm/img431.pdf}
     \caption{todo}
     \label{fig:431}
 \end{figure}
 
-\begin{figure}[h]
+\begin{table}[H]
     \centering
-    \includegraphics[width=\linewidth]{img432.pdf}
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:431}.}
+    \label{tab:config_img431}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Dataset Size & 10000 \\
+        \hline
+        Batch Size & 64 \\
+        \hline
+        Optimizer & SGD \\
+        \hline
+        Weight Decay & 0 \\
+        \hline
+        Margin & 0.2 \\
+        \hline
+        Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
+        \hline
+        Backbone LR & Factor $0.5$ (rispetto al LR Head) \\
+        \hline
+        Output Norm. & True \\
+        \hline
+        Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
+        \hline
+        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 5) \\
+        \hline
+        Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{imm/img432.pdf}
     \caption{todo}
     \label{fig:432}
 \end{figure}
 
-\begin{figure}[h]
+\begin{table}[H]
     \centering
-    \includegraphics[width=\linewidth]{img433.pdf}
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:432}.}
+    \label{tab:config_img432}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Dataset Size & 10000 \\
+        \hline
+        Batch Size & 64 \\
+        \hline
+        Optimizer & Adam \\
+        \hline
+        Weight Decay & 0 \\
+        \hline
+        Margin & 0.2 \\
+        \hline
+        Learning Rate & $1.0 \times 10^{-4} \to 1.0 \times 10^{-5}$ (Decay Factor: 0.1) \\
+        \hline
+        Backbone LR & Factor $0.5$ (rispetto al LR Head) \\
+        \hline
+        Output Norm. & True \\
+        \hline
+        Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
+        \hline
+        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 12) \\
+        \hline
+        Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
+
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\linewidth]{imm/img433.pdf}
     \caption{todo}
     \label{fig:433}
 \end{figure}
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:433}.}
+    \label{tab:config_433}
+    \begin{tabularx}{\linewidth}{|l|X|}
+        \hline
+        \textbf{hyperparameter} & \textbf{Value} \\
+        \hline
+        Dataset Size & Full \\
+        \hline
+        Batch Size & 256 \\
+        \hline
+        Optimizer & SGD \\
+        \hline
+        Weight Decay & 0 \\
+        \hline
+        Margin & 0.2 \\
+        \hline
+        Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
+        \hline
+        Backbone LR & Factor $0.25$ \\
+        \hline
+        Output Norm. & True \\
+        \hline
+        Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
+        \hline
+        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 15) \\
+        \hline
+        Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+        \hline
+    \end{tabularx}
+\end{table}
+
 
 \subsection{Comparison between Baseline and Proposed Models}
 
 The following table presents the results obtained comparing the proposed models with the baseline.
 
-\begin{table}[h]
+\begin{table}[H]
 \begin{center}
 \begin{tabular}{|l|c|c|c|}
 \hline
 Metric & Testing Triplet & Testing Cosine & Baseline \\
-\hline\hline
+\hline
 Accuracy & 0.8602 & 0.8794 & 0.8618 \\
 Precision & 0.2660 & 0.2787 & 0.2473 \\
 Recall & 0.4503 & 0.4390 & 0.4003 \\
@@ -297,7 +519,7 @@ This qualitative example supports the quantitative results obtained in the exper
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{img5.pdf}
+    \includegraphics[width=\linewidth]{imm/img5.pdf}
     \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative).}
     \label{fig:5}
 \end{figure}
@@ -310,7 +532,7 @@ This behavior suggests that the model does not simply memorize surface patterns,
 
 \begin{figure}[h]
     \centering
-    \includegraphics[width=\linewidth]{img45.pdf}
+    \includegraphics[width=\linewidth]{imm/img45.pdf}
     \caption{3D t-SNE Visualization of 10 Brands.}
     \label{fig:45}   
 \end{figure}
@@ -322,6 +544,16 @@ The adoption of an embedding-based paradigm allowed us to overcome the limitatio
 Experimental analysis highlighted a key result: the quality of a retrieval system is not measured solely by peak accuracy, but by the stability of the separation between classes in the latent space.
 A robust model is one capable of maintaining a consistent decision threshold over time, avoiding oscillations that could compromise the system's reliability.
 In this context, Triplet Loss has been shown to produce a more stable embedding space geometry, making it more suitable for industrial applications such as copyright protection and automatic media analysis.
+
+\subsection{Problems encountered}
+
+During training and testing, we were severely limited by the computational resources available to us; for this reason, we partially ran the model locally on our devices with a limited number of samples. Additionally, we also used Colab's A100 units, mitigating but not completely solving the problem. By limiting ourselves to a portion of the LogoDet-3K dataset, we don't know how the learning would have performed on the entire dataset.
+
+Overfitting: The most prevalent problem during the training phases was the strong tendency towards overfitting; this was the focus of hyperparameter improvement. We used data augmentation to make the model more resilient to brand distortions. Of all the data augmentation techniques, we avoided image cropping; this makes the task much more complex. At the same time, we reduced the backbone learning rate to avoid feature degradation, thus avoiding a loss of backbone generalization and recall of key features. We also used the dropout technique to develop a more robust model, reducing error variance. Seeking to further improve the model's performance, we applied normalization to each branch; this, not reflecting normalization across the entire dataset, introduces statistical noise from the mean and variance approximations computed on the mini-batch. The effect on training performance is similar to dropout, promoting faster convergence.
+
+\subsection{future developments}
+
+Better results can likely be achieved by training the network on triplets, using hard negative mining or hard example mining; this would theoretically improve robustness by selecting the most informative triplets for training, i.e., those in which the "positive" image is distant from the anchor and the "negative" image is close to the anchor, forcing the network to correct the error. This would also lead to a more discriminative embedding space. For the sake of completeness, it's worth mentioning that other types of losses and architectures could be explored for this type of project; one example is Faster R-CNN. Region proposal could be better at mitigating the problem of logos presented in natural, complex, or cluttered environments, and could yield good results when used as a backbone. As mentioned, different losses could also be used, including a variation of the triplet loss in which multiple negatives are proposed simultaneously; this could accelerate convergence by providing more separation constraints between negatives and anchors/positives. Another loss that could be experimented with is Proxy-Anchor Loss, which teaches the network a proxy vector for each class; these proxies are compared to each image, and through training, each image is pushed toward one of the proxies, theoretically allowing for greater separation between class clusters.
 
 
 {\small
