@@ -107,7 +107,7 @@ LogoDet-3K comprises 3,000 logo categories, with approximately 200,000 manually
 \subsection{Dataset Preprocessing and Partitioning}
 
 The preparation pipeline, aimed at optimizing dataset integrity and loading efficiency, was divided into three phases.
-\textbf{Brand Consolidation}: Automated cleanup was performed to merge duplicate folders (e.g., alpinestart-1 and alpinestars-2 contained the same information) and normalize labels in XML annotations.
+\textbf{Brand Consolidation}: Automated cleanup was performed to merge duplicate folders (e.g., alpinestart-1 and alpinestars-2 contained the same information), which reduced the actual number of brands, and normalize labels in XML annotations.
 \textbf{Static Indexing}: To accelerate data loading, a unique brand-to-index mapping was generated offline, injected directly into the XML files, and saved in a CSV lookup file for quick reference.
 \textbf{Brand-Wise Split}: The dataset was split offline, isolating 10\% of the brands for the test set. This separation at the class level (rather than at the individual image level) ensures rigorous open-set evaluation, testing the model on categories never encountered during training.
 At runtime, the system manages an online split of the remaining data using the getTrainValPaths function. This allows you to dynamically split the brands between Training and Validation (70/30 split for routine tests and 80/20 for final runs), ensuring that validation always occurs on classes not used for weight updating.
@@ -304,7 +304,7 @@ The most notable aspect of this example is not the absolute value of the similar
 The figure also highlights how the model doesn't limit itself to recognizing superficial elements of the logo, but is able to capture morphological features shared between objects of the same brand even when the visual appearance varies significantly (e.g., packaging vs. character figurines). This suggests that the learned embedding space does not simply encode textures or colors, but a more abstract semantic representation of the brand's visual identity.
 This qualitative example supports the quantitative results obtained in the experiments: the stability of the decision threshold observed during training translates into consistent system behavior even in real-world retrieval cases.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img5.pdf}
     \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative).}
@@ -317,21 +317,30 @@ This qualitative example supports the quantitative results obtained in the exper
 Visualization of the latent space using t-SNE qualitatively confirms the quantitative results. The points corresponding to the different brands form distinct and relatively compact clusters, with a clear separation between different categories.
 This behavior suggests that the model does not simply memorize surface patterns, but learns morphological features shared between logos of the same brand.
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img45.pdf}
     \caption{3D t-SNE Visualization of 10 Brands.}
     \label{fig:45}   
 \end{figure}
 
+\subsection{Discussion and Future Work}
+
+The results obtained highlight the inherent complexity of open-set logo recognition, where the model must generalize to brands never seen during the training phase. 
+
+A primary avenue for future improvement lies in the refinement of sampling strategies; the current Triplet Loss implementation could be significantly enhanced by introducing \textit{Hard Negative Mining}. By specifically selecting the most challenging positives and negatives for each anchor, the model would be forced to learn finer discriminative details rather than settling for easy ones.
+
+Furthermore, a significant challenge was the decision to process uncropped images. Consequently, the model had to navigate "contextual noise," learning to distinguish logos within complex backgrounds like clothing, toys, etc. Future iterations could incorporate an object detection stage to isolate the region of interest (for example using a Faster R-CNN). This would allow the backbone to focus exclusively on brand-specific morphology, likely bridging the remaining performance gap. Finally, exploring modern architectures such as Transformers could offer a more robust alternative to the ResNet-50 baseline.
+
 \section{Conclusion}
 
-This project demonstrated that logo recognition in open-set scenarios can be successfully addressed through Deep Metric Learning.
-The adoption of an embedding-based paradigm allowed us to overcome the limitations of closed classification systems, enabling the retrieval of brands never seen in the training phase.
-Experimental analysis highlighted a key result: the quality of a retrieval system is not measured solely by peak accuracy, but by the stability of the separation between classes in the latent space.
-A robust model is one capable of maintaining a consistent decision threshold over time, avoiding oscillations that could compromise the system's reliability.
-In this context, Triplet Loss has been shown to produce a more stable embedding space geometry, making it more suitable for industrial applications such as copyright protection and automatic media analysis.
+This project served as a comprehensive bridge between the theoretical frameworks discussed in class and the practical challenges of modern computer vision. Throughout the development process, we faced significant constraints that mirrored real-world AI development, particularly regarding computational resources and the inherent difficulty of the task. Relying on A100 GPUs via Google Colab Pro allowed us to manage the full dataset, where the 3 to 7-minute training cycles per epoch forced us to be highly disciplined in our approach to hyperparameter selection and backbone unfreezing.
 
+We put into practice several strategies explored during the course, including data augmentation, dropout, batch normalization, and differential learning rates, to mitigate the constant risk of overfitting.
+
+The experience of training on uncropped images also provided a valuable lesson in the impact of contextual noise. We learned that without a localized region of interest, the model is forced to interpret the entire scene, which adds a layer of complexity during the fine-tuning process. 
+
+Ultimately, we are satisfied with having successfully applied these advanced techniques to a real-world scenario. This project allowed us to move beyond the theory of metric learning to build a compact and functional system, proving that even with limited resources, it is possible to translate classroom concepts into a functioning retrieval pipeline.
 
 {\small
 \bibliographystyle{ieee_fullname}
