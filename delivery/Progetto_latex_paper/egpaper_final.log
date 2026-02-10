@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  8 FEB 2026 11:19
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  10 FEB 2026 11:25
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -264,11 +264,7 @@ File: ot1ptm.fd 2001/06/04 font definitions for OT1/ptm.
 File: l3backend-pdftex.def 2024-01-04 L3 backend support: PDF output (pdfTeX)
 \l__color_backend_stack_int=\count290
 \l__pdf_internal_box=\box55
-) (egpaper_final.aux
-
-LaTeX Warning: Label `fig:esempio_singolo' multiply defined.
-
-)
+) (egpaper_final.aux)
 \openout1 = `egpaper_final.aux'.
 
 LaTeX Font Info:    Checking defaults for OML/cmm/m/it on input line 25.
@@ -332,21 +328,18 @@ pdfTeX warning: pdflatex (file ./1immintro.pdf): PDF inclusion: found PDF versio
 <1immintro.pdf, id=3, 520.34402pt x 239.09325pt>
 File: 1immintro.pdf Graphic file (type pdf)
 <use 1immintro.pdf>
-Package pdftex.def Info: 1immintro.pdf  used on input line 81.
+Package pdftex.def Info: 1immintro.pdf  used on input line 76.
 (pdftex.def)             Requested size: 237.13594pt x 108.9627pt.
-
-LaTeX Warning: `!h' float specifier changed to `!ht'.
-
 
 
 pdfTeX warning: pdflatex (file ./logodet3k_with_red_dots.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
 <logodet3k_with_red_dots.pdf, id=5, 1168.46535pt x 650.48624pt>
 File: logodet3k_with_red_dots.pdf Graphic file (type pdf)
 <use logodet3k_with_red_dots.pdf>
-Package pdftex.def Info: logodet3k_with_red_dots.pdf  used on input line 119.
+Package pdftex.def Info: logodet3k_with_red_dots.pdf  used on input line 101.
 (pdftex.def)             Requested size: 237.13594pt x 132.01057pt.
 
-Underfull \hbox (badness 1642) in paragraph at lines 108--124
+Underfull \hbox (badness 1642) in paragraph at lines 91--105
 []\OT1/ptm/m/n/10 LogoDet-3K com-prises 3,000 logo cat-e-gories, with
  []
 
@@ -354,48 +347,130 @@ Underfull \hbox (badness 1642) in paragraph at lines 108--124
 
 
  <./1immintro.pdf>]
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 133.
+Underfull \vbox (badness 1194) has occurred while \output is active []
+
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 122.
  (C:\Users\Lenovo\Desktop\altro\imp\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 1377) in paragraph at lines 145--146
-[]\OT1/pcr/m/n/10 DatasetContrastive\OT1/ptm/m/n/10 : Gen-er-ates im-age pairs
- []
-
-
-Underfull \hbox (badness 3260) in paragraph at lines 155--156
+Underfull \hbox (badness 3260) in paragraph at lines 123--124
 []\OT1/ptm/b/n/10 Augmentation: \OT1/ptm/m/n/10 Dur-ing train-ing, trans-for-ma-tions
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 155--156
+Underfull \hbox (badness 10000) in paragraph at lines 123--124
 \OT1/ptm/m/n/10 are ap-plied, in-clud-ing \OT1/pcr/m/n/10 RandomResizedCrop\OT1/ptm/m/n/10 ,
  []
 
-[4322 <./logodet3k_with_red_dots.pdf>] (egpaper_final.bbl) [4323
+[4322 <./logodet3k_with_red_dots.pdf>]
+Underfull \hbox (badness 1107) in paragraph at lines 165--166
+[]\OT1/ptm/b/n/10 Precision and Re-call\OT1/ptm/m/n/10 : Cal-cu-lated to an-a-lyze the
+ []
 
-] (egpaper_final.aux)
+[4323]
+
+pdfTeX warning: pdflatex (file ./img41.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img41.pdf, id=53, 453.1038pt x 181.81125pt>
+File: img41.pdf Graphic file (type pdf)
+<use img41.pdf>
+Package pdftex.def Info: img41.pdf  used on input line 203.
+(pdftex.def)             Requested size: 237.13594pt x 95.15271pt.
+
+
+pdfTeX warning: pdflatex (file ./img42.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img42.pdf, id=54, 453.1038pt x 181.2411pt>
+File: img42.pdf Graphic file (type pdf)
+<use img42.pdf>
+Package pdftex.def Info: img42.pdf  used on input line 210.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+
+pdfTeX warning: pdflatex (file ./img43.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img43.pdf, id=55, 453.1038pt x 181.2411pt>
+File: img43.pdf Graphic file (type pdf)
+<use img43.pdf>
+Package pdftex.def Info: img43.pdf  used on input line 217.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+
+
+pdfTeX warning: pdflatex (file ./img44.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img44.pdf, id=56, 453.1038pt x 181.2411pt>
+File: img44.pdf Graphic file (type pdf)
+<use img44.pdf>
+Package pdftex.def Info: img44.pdf  used on input line 224.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4324 <./img41.pdf> <./img42.pdf> <./img43.pdf> <./img44.pdf>]
+
+pdfTeX warning: pdflatex (file ./img431.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img431.pdf, id=79, 453.1038pt x 181.2411pt>
+File: img431.pdf Graphic file (type pdf)
+<use img431.pdf>
+Package pdftex.def Info: img431.pdf  used on input line 243.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+
+pdfTeX warning: pdflatex (file ./img432.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img432.pdf, id=80, 453.1038pt x 181.2411pt>
+File: img432.pdf Graphic file (type pdf)
+<use img432.pdf>
+Package pdftex.def Info: img432.pdf  used on input line 250.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+
+pdfTeX warning: pdflatex (file ./img433.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img433.pdf, id=81, 453.1038pt x 181.2411pt>
+File: img433.pdf Graphic file (type pdf)
+<use img433.pdf>
+Package pdftex.def Info: img433.pdf  used on input line 257.
+(pdftex.def)             Requested size: 237.13594pt x 94.85431pt.
+
+Overfull \hbox (1.71185pt too wide) in paragraph at lines 268--281
+ [] 
+ []
+
+
+LaTeX Warning: `h' float specifier changed to `ht'.
+
+[4325 <./img431.pdf> <./img432.pdf> <./img433.pdf>]
+
+pdfTeX warning: pdflatex (file ./img5.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img5.pdf, id=95, 453.23227pt x 159.10141pt>
+File: img5.pdf Graphic file (type pdf)
+<use img5.pdf>
+Package pdftex.def Info: img5.pdf  used on input line 300.
+(pdftex.def)             Requested size: 237.13594pt x 83.24544pt.
+
+
+pdfTeX warning: pdflatex (file ./img45.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
+<img45.pdf, id=96, 453.65485pt x 375.66045pt>
+File: img45.pdf Graphic file (type pdf)
+<use img45.pdf>
+Package pdftex.def Info: img45.pdf  used on input line 313.
+(pdftex.def)             Requested size: 237.13594pt x 196.3706pt.
+(egpaper_final.bbl) [4326 <./img5.pdf> <./img45.pdf>] (egpaper_final.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
-
-
-LaTeX Warning: There were multiply-defined labels.
-
  ) 
 Here is how much of TeX's memory you used:
- 10080 strings out of 474486
- 154642 string characters out of 5748911
+ 10169 strings out of 474486
+ 156110 string characters out of 5748911
  1945542 words of memory out of 5000000
- 32185 multiletter control sequences out of 15000+600000
+ 32256 multiletter control sequences out of 15000+600000
  581786 words of font info for 88 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,9n,79p,526b,499s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,9n,79p,639b,513s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmri8a.pfb>
-Output written on egpaper_final.pdf (3 pages, 197586 bytes).
+Output written on egpaper_final.pdf (6 pages, 482707 bytes).
 PDF statistics:
- 85 PDF objects out of 1000 (max. 8388607)
- 23 named destinations out of 1000 (max. 500000)
- 11 words of extra memory for PDF output out of 10000 (max. 10000000)
+ 151 PDF objects out of 1000 (max. 8388607)
+ 41 named destinations out of 1000 (max. 500000)
+ 56 words of extra memory for PDF output out of 10000 (max. 10000000)
 

@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex egpaper_final"] 1770545995.27438 "egpaper_final.aux" "egpaper_final.bbl" "egpaper_final" 1770545998.97654 0
+["bibtex egpaper_final"] 1770719151.67996 "egpaper_final.aux" "egpaper_final.bbl" "egpaper_final" 1770719153.20693 0
   "./egbib.bib" 1770457197 1194 86e42f32e08dfe17ea2ac5ff514ddcca ""
   "./ieee_fullname.bst" 1770454675 19905 72b73f4cb1c51eaa1a7af8ecad2b6bfb ""
-  "egpaper_final.aux" 1770545997 2595 2f2d54f29451661cce543fb05730cbd7 "pdflatex"
+  "egpaper_final.aux" 1770719152 5355 cce22d340c969fd22d37ad1a75b09d8d "pdflatex"
   (generated)
   "egpaper_final.bbl"
   "egpaper_final.blg"
   (rewritten before read)
-["pdflatex"] 1770545995.8262 "c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex" "egpaper_final.pdf" "egpaper_final" 1770545998.97898 0
+["pdflatex"] 1770719151.92057 "c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex" "egpaper_final.pdf" "egpaper_final" 1770719153.20748 0
   "1immintro.pdf" 1770462345 48017 6b26b07856c736421be60cce1179a36d ""
   "C:/Users/Lenovo/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1770455120 83788 3e06ff692e1323f668f12ea28ca579e9 ""
   "C:/Users/Lenovo/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1758720975 24219890 7e300360b651b24e66fed3f5171a8d36 ""
@@ -113,13 +113,22 @@
   "C:/Users/Lenovo/Desktop/altro/imp/tex/latex/rerunfilecheck/rerunfilecheck.sty" 1751104012 9684 a33a14b82ce60d6e77cb9be689d79ee6 ""
   "C:/Users/Lenovo/Desktop/altro/imp/tex/latex/tools/xspace.sty" 1700599895 4545 9f5ea23ab1c91476c42749893f790666 ""
   "C:/Users/Lenovo/Desktop/altro/imp/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex" 1770545985 24454 51e4b43f19bc8d36c45faf03f041e162 ""
+  "c:/Users/Lenovo/Desktop/ProgettoFinale1/delivery/Progetto_latex_paper/egpaper_final.tex" 1770719149 25151 ac6481a3f799017d2272d2792e72ef05 ""
   "cvpr.sty" 1770454675 8185 9c85e63bb1830fdefeac27370f229c9e ""
   "cvpr_eso.sty" 1770454675 3878 6aa7c08ff2621006e0603349e40a30a8 ""
-  "egpaper_final.aux" 1770545997 2595 2f2d54f29451661cce543fb05730cbd7 "pdflatex"
-  "egpaper_final.bbl" 1770545995 377 9f90875a663af80b50d0bb6470c7f387 "bibtex egpaper_final"
-  "egpaper_final.tex" 1770545985 24454 51e4b43f19bc8d36c45faf03f041e162 ""
+  "egpaper_final.aux" 1770719152 5355 cce22d340c969fd22d37ad1a75b09d8d "pdflatex"
+  "egpaper_final.bbl" 1770719151 377 9f90875a663af80b50d0bb6470c7f387 "bibtex egpaper_final"
+  "egpaper_final.tex" 1770719149 25151 ac6481a3f799017d2272d2792e72ef05 ""
   "eso-pic.sty" 1770454675 9460 d2935ae95b5cd343fcf5887ff530288d ""
+  "img41.pdf" 1770718223 20839 902be5dfb4f27d0068b828f6e9ca5f95 ""
+  "img42.pdf" 1770718252 28297 4691858ed4327d040bf3aaa6a750d82a ""
+  "img43.pdf" 1770718276 32787 1dcfcea7a38b2851b6a1e2b93e180446 ""
+  "img431.pdf" 1770718523 31067 b30554a6fdd420acdae67a3d8c31cbb3 ""
+  "img432.pdf" 1770718745 31484 9ef6231c1709de43818cd3311744729d ""
+  "img433.pdf" 1770718757 31630 511a77bd981e3a4b7a90a283e8bf9859 ""
+  "img44.pdf" 1770718288 31140 62783df9115c0678f7cf3fc96758e3d0 ""
+  "img45.pdf" 1770719090 27653 08d39529095d4917318abf3d2742c20b ""
+  "img5.pdf" 1770719017 36717 3da32ca7a7b9d8334b4c7faa3e3ee55b ""
   "logodet3k_with_red_dots.pdf" 1770464681 42147 da080b0c5eb091c22dceaa5c2e01998e ""
   (generated)
   "egpaper_final.aux"

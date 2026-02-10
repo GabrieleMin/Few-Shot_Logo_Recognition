@@ -66,40 +66,23 @@ address\\
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
-Accurate logo recognition has become a fundamental pillar of media analysis and
-copyright protection. In uncontrolled environments, however, computer vision systems
-must contend with market dynamics: new brands emerge every day with unique visual identities
-that must be instantly identified. Traditional classification paradigms suffer from two
-structural limitations: the need for enormous datasets for each class and the inability
-to recognize categories not included in the training set. This phenomenon, known as 
-long-tailed distribution, makes models rigid and expensive to update. Few-Shot Learning emerges as a necessary solution, shifting the focus from "mnemonic recognition" to
-"morphological comparison." 
-\begin{figure}[!h] % [t] forza l'immagine in alto (Top) logodet3k_with_red_dots
+Accurate logo recognition has become a fundamental pillar of media analysis and copyright protection. In uncontrolled contexts, however, computer vision systems must contend with market dynamics: new brands emerge every day with unique visual identities that must be instantly identified.
+Classical classification paradigms suffer from two structural limitations: the need for enormous datasets for each class and the inability to recognize categories not included in the training set. These models are rigid and vulnerable to the long-tailed distribution of the real world, where rare classes are the norm. Few-Shot Learning emerges as a necessary solution, shifting the focus from "mnemonic recognition" to "morphological comparison."
+In this work, we address this challenge by implementing a Deep Metric Learning system.
+
+\begin{figure}[!ht]
    \centering
-   % Sostituisci 'nome_immagine' con il nome del file (senza estensione se vuoi)
-   % width=\linewidth adatta l'immagine esattamente alla larghezza della colonna
+
    \includegraphics[width=\linewidth]{1immintro.pdf}
    
    \caption{Sample of images from LogoDet-3K}
-   \label{fig:esempio_singolo} % Label per citarla nel testo
 \end{figure}
-In this work, we address this challenge by implementing a Deep
-Metric Learning system. Instead of training the model to assign a label, we train it to "measure"
-similarity. Using the LogoDet-3K dataset, we developed a pipeline that extracts deep features
-using a ResNet-50 and projects them into a metric space where the Euclidean distance reflects the
-semantic relatedness of the logos. This approach not only better manages data sparsity, but also
-allows the system to operate on unseen classes without the need for retraining. The approach
-presented here focuses on overcoming the limitations of traditional classification through
-various technical solutions. The work first introduces an embedding-based architecture,
-developed using a linear projection head that enables a standard CNN to extract metric features.
-This structure allows for an in-depth comparative analysis of losses, evaluating how Triplet and
-Contrastive Loss (in the Euclidean and Cosine variants) influence the topology of the latent space.
-To support training, a dynamic transfer learning management system based on progressive layer
-unlocking is implemented, ensuring an optimal balance between model stability and performance.
-The work concludes with an Open-Set Evaluation conducted on brands never encountered during the
-training phase, using retrieval metrics such as mAP to validate the system's actual generalization capability.
 
-%-------------------------------------------------------------------------
+Instead of training the model to assign a label, we train it to generate embeddings in a compact latent space. Using the LogoDet-3K dataset, we developed a pipeline that extracts deep features using a ResNet-50 and projects them into a metric space where the Euclidean distance reflects the semantic relatedness of the logos. This approach not only better manages data sparsity, but also allows the system to operate on unseen classes without the need for retraining.
+The approach presented here focuses on overcoming the limitations of traditional classification through various technical solutions. The work first introduces an embedding-based architecture, developed using a linear projection head that enables a standard CNN to extract metric features. This structure allows for an in-depth comparative analysis of losses, evaluating how Triplet and Contrastive Loss (in the Euclidean and Cosine variants) influence the topology of the latent space.
+To support training, a dynamic transfer learning management system based on progressive layer unlocking is implemented, ensuring an optimal balance between model stability and learning speed, while also allowing for deeper specialization of the extracted features. The work concludes with an Open-Set Evaluation conducted on brands never encountered during the training phase, using retrieval metrics such as mAP to validate the system's actual generalization capability.
+
+
 \section{Data}
 For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which currently
  represents one of the largest and most complex benchmarks for logo recognition.
@@ -112,46 +95,31 @@ LogoDet-3K comprises 3,000 logo categories, with approximately 200,000 manually
  some classes have a very large number of samples, while others (especially in the Medical 
  or Sports categories) have very few instances. This distribution faithfully reflects the 
  challenges of real-world scenarios.
- \begin{figure}[!h] % [t] forza l'immagine in alto (Top) 
+ \begin{figure}[!ht]
    \centering
-   % Sostituisci 'nome_immagine' con il nome del file (senza estensione se vuoi)
-   % width=\linewidth adatta l'immagine esattamente alla larghezza della colonna
+
    \includegraphics[width=\linewidth]{logodet3k_with_red_dots.pdf}
    
    \caption{Distribution of the LogoDet-3K dataset by macro-category}
-   \label{fig:esempio_singolo} % Label per citarla nel testo
 \end{figure}
 
-\subsection{Splitting of the Dataset (Brand-Level Split)}
-Unlike standard classification pipelines, where images are randomly shuffled and split,
-our code implements the \texttt{getPathsSetsByBrand} function. This logic applies splitting at the
-class (brand) level rather than at the individual image level:
-\begin{itemize}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \item Training Set (70\% of brands): The model learns the general morphological characteristics of logos.
-    \item Validation Set (20\% of brands): Used to monitor the F1 score and convergence on brands never seen during training.
-    \item Test Set (10\% of brands): Reserved for the final performance evaluation in Open-Set Retrieval mode.
-\end{itemize}
+\subsection{Dataset Preprocessing and Partitioning}
 
-\subsection{Data Preparation and Sampling}
-To meet the requirements of the implemented loss functions, two specific Dataset classes have been created:
-\begin{enumerate}
-    \setlength{\itemsep}{0pt}
-    \setlength{\parskip}{0pt}
-    \setlength{\parsep}{0pt}
-    \item \texttt{DatasetTriplet}: For each reference image (Anchor), randomly select one example of the same brand (Positive) and one of a different brand (Negative).
-    \item \texttt{DatasetContrastive}: Generates image pairs with a 50\% probability of belonging to the same brand (label 1) or different brands (label 0).
-\end{enumerate}
+The preparation pipeline, aimed at optimizing dataset integrity and loading efficiency, was divided into three phases.
+\textbf{Brand Consolidation}: Automated cleanup was performed to merge duplicate folders (e.g., alpinestart-1 and alpinestars-2 contained the same information) and normalize labels in XML annotations.
+\textbf{Static Indexing}: To accelerate data loading, a unique brand-to-index mapping was generated offline, injected directly into the XML files, and saved in a CSV lookup file for quick reference.
+\textbf{Brand-Wise Split}: The dataset was split offline, isolating 10\% of the brands for the test set. This separation at the class level (rather than at the individual image level) ensures rigorous open-set evaluation, testing the model on categories never encountered during training.
+At runtime, the system manages an online split of the remaining data using the getTrainValPaths function. This allows you to dynamically split the brands between Training and Validation (70/30 split for routine tests and 80/20 for final runs), ensuring that validation always occurs on classes not used for weight updating.
+
+\subsection{Sampling and Data Loading Strategies}
+To meet the requirements of the implemented loss functions, two specific Dataset classes were created:
+\textbf{DatasetTriplet}: For each reference image (Anchor), randomly selects one example from the same brand (Positive) and one from a different brand (Negative).
+\textbf{DatasetContrastive}: Generates image pairs with a 50\% probability of belonging to the same brand (label 1) or different brands (label 0).
 
 \subsection{Preprocessing and Data Augmentation}
-
 The original images have heterogeneous resolutions. In the loading module, the data is normalized and transformed to improve the model's robustness:
-
 \begin{itemize}
-    \item \textbf{Resize and Normalization:} All images are resized to $224 \times 224$ pixels and normalized using the ImageNet mean and standard deviation, ensuring compatibility with the pre-trained weights of ResNet-50.
-    
+    \item \textbf{Resize and Normalization:} All images are resized to $224 \times 224$ pixels and normalized using the ImageNet mean and standard deviation, ensuring compatibility with the pre-trained weights of ResNet-50. 
     \item \textbf{Augmentation:} During training, transformations are applied, including \texttt{RandomResizedCrop}, \texttt{RandomHorizontalFlip}, and \texttt{ColorJitter}. These techniques simulate the distortions typical of real-world logos (light variations, angled shots, etc.).
 \end{itemize}
 
@@ -160,11 +128,11 @@ The original images have heterogeneous resolutions. In the loading module, the d
 This section describes the system architecture and the optimization methodologies adopted to transform the logo recognition problem into a Deep Metric Learning task.
 
 \subsection{Model Architecture: LogoResNet50}
-The implemented architecture is based on the ResNet-50 backbone, chosen for its optimal balance between computational depth and feature extraction capability. The original model, pre-trained on ImageNet, was modified to adapt to the metric learning paradigm through two structural interventions:
+The implemented architecture is based on a ResNet-50 backbone, chosen for its optimal balance between computational depth and feature extraction capability. The original model, pre-trained on ImageNet, has been modified to adapt to the metric learning paradigm through two structural interventions:
+
 \begin{itemize}
-    \item \textbf{Classifier Replacement:} The final Fully Connected layer (originally designed for 1,000 classes) was removed and replaced with a Linear Embedding Head. This module projects the high-level features extracted by the network into a $128$-dimensional latent space.
-    
-    \item \textbf{Space Normalization:} The output embeddings are treated as geometric coordinates; the network learns to place similar logos in nearby regions of the vector space.
+    \item \textbf{Embedding Head Evolution}: Different configurations for latent space projection were tested, varying the size of the embeddings (128 and 256) and the module complexity. In addition to the single Linear layer, a more robust architecture was evaluated consisting of a first high-dimensional FC layer, followed by \textbf{1D Batch Normalization} and \textbf{Dropout}, and ending with a second FC layer for the final embedding. This structure is designed to regularize learning and improve class separation.
+    \item \textbf{Spatial Normalization}: To ensure the effectiveness of the loss functions, the embeddings are normalized using the Euclidean norm. This step prevents the model from minimizing the loss by artificially increasing the magnitude (scale) of the vectors to distance them. Normalization forces the network to optimize the \textbf{semantic direction} of the logos, ensuring that spatial proximity reflects a true morphological similarity and not simply a scale artifact.
 \end{itemize}
 
 
@@ -180,329 +148,180 @@ To optimize the topology of the embedding space, three different training object
 
 \subsection{Training and Transfer Learning Strategy}
 Training is managed by a dynamic configuration system (Config) that allows for reproducible experiments. The main phases include:
+
 \begin{itemize}
-   \item \textbf{Progressive Freezing}: To preserve pre-learned knowledge about ImageNet, the model starts training with frozen backbone convolutional blocks (freeze\_layers).
-   \item \textbf{Dynamic Unfreezing}: Upon reaching a predetermined epoch (\texttt{unfreeze\_at\_epoch}$ = 5$), the code unfreezes layers, allowing for fine-tuning of logo-specific spatial features.
-   \item \textbf{Optimization}: The Adam optimizer with a conservative learning rate $(1e-5)$ is used to ensure stable convergence and minimize oscillations in the Loss.
+
+    \item \textbf{Progressive Freezing}: To preserve pre-learned knowledge about ImageNet, the model starts training with frozen backbone convolutional blocks (freeze\_layers).
+   \item \textbf{Dynamic Unfreezing}: Upon reaching a predetermined epoch (unfreeze\_at\_epoch = 5), the code unfreezes layers, allowing for fine-tuning of logo-specific spatial features. To handle the sudden increase in trainable parameters, a learning rate reduction was implemented, allowing for more stable and precise fine-tuning of spatial features.
+   \item \textbf{Optimization}: Both \textbf{SGD} and \textbf{Adam} were evaluated, adopting a differentiated learning rate strategy for both, where the learning rate for the backbone parameters is reduced by a factor of 1 compared to that for the head parameters. This allows us to refine the specific morphological knowledge of the logos without compromising the patterns pre-trained on ImageNet.
+
 \end{itemize}
 
 \subsection{Evaluation Metrics}
-The system is evaluated not simply on accuracy, but on its ranking ability. The main metrics calculated in the validation loop are:
+The main metrics calculated in the validation loop are:
 \begin{itemize}
    \item \textbf{F1-Score}: Dynamically calculated during training to monitor the balance between Precision and Recall.
    \item \textbf{Mean Average Precision (mAP)}: Used to measure retrieval quality, i.e., how effectively the model ranks correct logos at the top of search results.
+   \item \textbf{Precision and Recall}: Calculated to analyze the model's behavior with respect to false positives and false negatives. Precision indicates how reliable the positive predictions (logo matches) are, while recall measures the system's ability to retrieve all correct instances.
+   \item \textbf{Recall at fixed Precision (R@95P)}: It measures the percentage of correct matches recovered when the system detects a high accuracy (95\%), that is, when you want to minimize false positives.
+
 \end{itemize}
 
 
 \section{experiments}
+The experimental analysis consisted of a series of tests aimed at identifying the optimal combination of hyperparameters, following different transfer learning strategies.
 
-\section{results}
+\subsection{Configuring Training and Testing}
+
+For training and evaluating the system, a pipeline has been defined that separates feature learning from their evaluation in unseen scenarios.
+
+\begin{itemize}
+    \item \textbf{Training (Deep Metric Learning)}: All experiments were conducted using a ResNet-50 pre-trained on ImageNet and adapted to the metric learning paradigm via an embedding head.
+Training was performed using a progressive unfreezing strategy: the backbone was initially frozen to stabilize the projection in latent space, then progressively unfreezed to adapt the features to the morphology of the logos.
+    \item \textbf{Testing (Few-Shot Evaluation)}: Testing is not based on simple class accuracy, but rather on episodic evaluation (N-way K-shot).
+The system is tested on brands never seen in the training set. For each episode, a few example images (support set) are provided, along with a query to be classified using cosine similarity in the latent space. This ensures that the model is effectively "measuring similarity" and not memorizing labels.
+\end{itemize}
+
+\subsection{Hyperparameter Optimization Strategy}
+The training phase followed an iterative optimization strategy to achieve the best hyper parameters configuration. The model was evaluated based on its ability to minimize the Triplet Loss while maximizing the Validation F1 Score at an optimal distance threshold.
 
 
-%
-%An example of a bad paper just asking to be rejected:
-%\begin{quote}
-%\begin{center}
-%    An analysis of the frobnicatable foo filter.
-%\end{center}
-%
-%   In this paper we present a performance analysis of our
-%   previous paper [1], and show it to be inferior to all
-%   previously known methods.  Why the previous paper was
-%   accepted without this analysis is beyond me.
-%
-%   [1] Removed for blind review
-%\end{quote}
-%
-%
-%An example of an acceptable paper:
-%
-%\begin{quote}
-%\begin{center}
-%     An analysis of the frobnicatable foo filter.
-%\end{center}
-%
-%   In this paper we present a performance analysis of the
-%   paper of Smith \etal [1], and show it to be inferior to
-%   all previously known methods.  Why the previous paper
-%   was accepted without this analysis is beyond me.
-%
-%   [1] Smith, L and Jones, C. ``The frobnicatable foo
-%   filter, a fundamental contribution to human knowledge''.
-%   Nature 381(12), 1-213.
-%\end{quote}
-%
-%If you are making a submission to another conference at the same time,
-%which covers similar or overlapping material, you may need to refer to that
-%submission in order to explain the differences, just as you would if you
-%had previously published related work.  In such cases, include the
-%anonymized parallel submission~\cite{Authors14} as additional material and
-%cite it as
-%\begin{quote}
-%[1] Authors. ``The frobnicatable foo filter'', F\&G 2014 Submission ID 324,
-%Supplied as additional material {\tt fg324.pdf}.
-%\end{quote}
-%
-%Finally, you may feel you need to tell the reader that more details can be
-%found elsewhere, and refer them to a technical report.  For conference
-%submissions, the paper must stand on its own, and not {\em require} the
-%reviewer to go to a techreport for further details.  Thus, you may say in
-%the body of the paper ``further details may be found
-%in~\cite{Authors14b}''.  Then submit the techreport as additional material.
-%Again, you may not assume the reviewers will read this material.
-%
-%Sometimes your paper is about a problem which you tested using a tool which
-%is widely known to be restricted to a single institution.  For example,
-%let's say it's 1969, you have solved a key problem on the Apollo lander,
-%and you believe that the CVPR70 audience would like to hear about your
-%solution.  The work is a development of your celebrated 1968 paper entitled
-%``Zero-g frobnication: How being the only people in the world with access to
-%the Apollo lander source code makes us a wow at parties'', by Zeus \etal.
-%
-%You can handle this paper like any other.  Don't write ``We show how to
-%improve our previous work [Anonymous, 1968].  This time we tested the
-%algorithm on a lunar lander [name of lander removed for blind review]''.
-%That would be silly, and would immediately identify the authors. Instead
-%write the following:
-%\begin{quotation}
-%\noindent
-%   We describe a system for zero-g frobnication.  This
-%   system is new because it handles the following cases:
-%   A, B.  Previous systems [Zeus et al. 1968] didn't
-%   handle case B properly.  Ours handles it by including
-%   a foo term in the bar integral.
-%
-%   ...
-%
-%   The proposed system was integrated with the Apollo
-%   lunar lander, and went all the way to the moon, don't
-%   you know.  It displayed the following behaviours
-%   which show how well we solved cases A and B: ...
-%\end{quotation}
-%As you can see, the above text follows standard scientific convention,
-%reads better than the first version, and does not explicitly name you as
-%the authors.  A reviewer might think it likely that the new paper was
-%written by Zeus \etal, but cannot make any decision based on that guess.
-%He or she would have to be sure that no other authors could have been
-%contracted to solve problem B.
-%\medskip
-%
-%\noindent
-%FAQ\medskip\\
-%{\bf Q:} Are acknowledgements OK?\\
-%{\bf A:} No.  Leave them for the final copy.\medskip\\
-%{\bf Q:} How do I cite my results reported in open challenges?
-%{\bf A:} To conform with the double blind review policy, you can report results of other challenge participants together with your results in your paper. For your results, however, you should not identify yourself and should not mention your participation in the challenge. Instead present your results referring to the method proposed in your paper and draw conclusions based on the experimental comparison to other results.\medskip\\
-%
-%
-%
-%\begin{figure}[t]
-%\begin{center}
-%\fbox{\rule{0pt}{2in} \rule{0.9\linewidth}{0pt}}
-%   %\includegraphics[width=0.8\linewidth]{egfigure.eps}
-%\end{center}
-%   \caption{Example of caption.  It is set in Roman so that mathematics
-%   (always set in Roman: $B \sin A = A \sin B$) may be included without an
-%   ugly clash.}
-%\label{fig:long}
-%\label{fig:onecol}
-%\end{figure}
-%
-%\subsection{Miscellaneous}
-%
-%\noindent
-%Compare the following:\\
-%\begin{tabular}{ll}
-% \verb'$conf_a$' &  $conf_a$ \\
-% \verb'$\mathit{conf}_a$' & $\mathit{conf}_a$
-%\end{tabular}\\
-%See The \TeX book, p165.
-%
-%The space after \eg, meaning ``for example'', should not be a
-%sentence-ending space. So \eg is correct, {\em e.g.} is not.  The provided
-%\verb'\eg' macro takes care of this.
-%
-%When citing a multi-author paper, you may save space by using ``et alia'',
-%shortened to ``\etal'' (not ``{\em et.\ al.}'' as ``{\em et}'' is a complete word.)
-%However, use it only when there are three or more authors.  Thus, the
-%following is correct: ``
-%   Frobnication has been trendy lately.
-%   It was introduced by Alpher~\cite{Alpher02}, and subsequently developed by
-%   Alpher and Fotheringham-Smythe~\cite{Alpher03}, and Alpher \etal~\cite{Alpher04}.''
-%
-%This is incorrect: ``... subsequently developed by Alpher \etal~\cite{Alpher03} ...''
-%because reference~\cite{Alpher03} has just two authors.  If you use the
-%\verb'\etal' macro provided, then you need not worry about double periods
-%when used at the end of a sentence as in Alpher \etal.
-%
-%For this citation style, keep multiple citations in numerical (not
-%chronological) order, so prefer \cite{Alpher03,Alpher02,Authors14} to
-%\cite{Alpher02,Alpher03,Authors14}.
-%
-%
-%\begin{figure*}
-%\begin{center}
-%\fbox{\rule{0pt}{2in} \rule{.9\linewidth}{0pt}}
-%\end{center}
-%   \caption{Example of a short caption, which should be centered.}
-%\label{fig:short}
-%\end{figure*}
-%
-%%------------------------------------------------------------------------
-%\section{Formatting your paper}
-%
-%All text must be in a two-column format. The total allowable width of the
-%text area is $6\frac78$ inches (17.5 cm) wide by $8\frac78$ inches (22.54
-%cm) high. Columns are to be $3\frac14$ inches (8.25 cm) wide, with a
-%$\frac{5}{16}$ inch (0.8 cm) space between them. The main title (on the
-%first page) should begin 1.0 inch (2.54 cm) from the top edge of the
-%page. The second and following pages should begin 1.0 inch (2.54 cm) from
-%the top edge. On all pages, the bottom margin should be 1-1/8 inches (2.86
-%cm) from the bottom edge of the page for $8.5 \times 11$-inch paper; for A4
-%paper, approximately 1-5/8 inches (4.13 cm) from the bottom edge of the
-%page.
-%
-%%-------------------------------------------------------------------------
-%\subsection{Margins and page numbering}
-%
-%All printed material, including text, illustrations, and charts, must be kept
-%within a print area 6-7/8 inches (17.5 cm) wide by 8-7/8 inches (22.54 cm)
-%high.
-%Page numbers should be in footer with page numbers, centered and .75
-%inches from the bottom of the page and make it start at the correct page
-%number rather than the 4321 in the example.  To do this fine the line (around
-%line 23)
-%\begin{verbatim}
-%%\ifcvprfinal\pagestyle{empty}\fi
-%\setcounter{page}{4321}
-%\end{verbatim}
-%where the number 4321 is your assigned starting page.
-%
-%Make sure the first page is numbered by commenting out the first page being
-%empty on line 46
-%\begin{verbatim}
-%%\thispagestyle{empty}
-%\end{verbatim}
-%
-%
-%%-------------------------------------------------------------------------
-%\subsection{Type-style and fonts}
-%
-%Wherever Times is specified, Times Roman may also be used. If neither is
-%available on your word processor, please use the font closest in
-%appearance to Times to which you have access.
-%
-%MAIN TITLE. Center the title 1-3/8 inches (3.49 cm) from the top edge of
-%the first page. The title should be in Times 14-point, boldface type.
-%Capitalize the first letter of nouns, pronouns, verbs, adjectives, and
-%adverbs; do not capitalize articles, coordinate conjunctions, or
-%prepositions (unless the title begins with such a word). Leave two blank
-%lines after the title.
-%
-%AUTHOR NAME(s) and AFFILIATION(s) are to be centered beneath the title
-%and printed in Times 12-point, non-boldface type. This information is to
-%be followed by two blank lines.
-%
-%The ABSTRACT and MAIN TEXT are to be in a two-column format.
-%
-%MAIN TEXT. Type main text in 10-point Times, single-spaced. Do NOT use
-%double-spacing. All paragraphs should be indented 1 pica (approx. 1/6
-%inch or 0.422 cm). Make sure your text is fully justified---that is,
-%flush left and flush right. Please do not place any additional blank
-%lines between paragraphs.
-%
-%Figure and table captions should be 9-point Roman type as in
-%Figures~\ref{fig:onecol} and~\ref{fig:short}.  Short captions should be centred.
-%
-%\noindent Callouts should be 9-point Helvetica, non-boldface type.
-%Initially capitalize only the first word of section titles and first-,
-%second-, and third-order headings.
-%
-%FIRST-ORDER HEADINGS. (For example, {\large \bf 1. Introduction})
-%should be Times 12-point boldface, initially capitalized, flush left,
-%with one blank line before, and one blank line after.
-%
-%SECOND-ORDER HEADINGS. (For example, { \bf 1.1. Database elements})
-%should be Times 11-point boldface, initially capitalized, flush left,
-%with one blank line before, and one after. If you require a third-order
-%heading (we discourage it), use 10-point Times, boldface, initially
-%capitalized, flush left, preceded by one blank line, followed by a period
-%and your text on the same line.
-%
-%%-------------------------------------------------------------------------
-%\subsection{Footnotes}
-%
-%Please use footnotes\footnote {This is what a footnote looks like.  It
-%often distracts the reader from the main flow of the argument.} sparingly.
-%Indeed, try to avoid footnotes altogether and include necessary peripheral
-%observations in
-%the text (within parentheses, if you prefer, as in this sentence).  If you
-%wish to use a footnote, place it at the bottom of the column on the page on
-%which it is referenced. Use Times 8-point type, single-spaced.
-%
-%
-%%-------------------------------------------------------------------------
-%\subsection{References}
-%
-%List and number all bibliographical references in 9-point Times,
-%single-spaced, at the end of your paper. When referenced in the text,
-%enclose the citation number in square brackets, for
-%example~\cite{Authors14}.  Where appropriate, include the name(s) of
-%editors of referenced books.
-%
-%\begin{table}
-%\begin{center}
-%\begin{tabular}{|l|c|}
-%\hline
-%Method & Frobnability \\
-%\hline\hline
-%Theirs & Frumpy \\
-%Yours & Frobbly \\
-%Ours & Makes one's heart Frob\\
-%\hline
-%\end{tabular}
-%\end{center}
-%\caption{Results.   Ours is better.}
-%\end{table}
-%
-%%-------------------------------------------------------------------------
-%\subsection{Illustrations, graphs, and photographs}
-%
-%All graphics should be centered.  Please ensure that any point you wish to
-%make is resolvable in a printed copy of the paper.  Resize fonts in figures
-%to match the font in the body text, and choose line widths which render
-%effectively in print.  Many readers (and reviewers), even of an electronic
-%copy, will choose to print your paper in order to read it.  You cannot
-%insist that they do otherwise, and therefore must not assume that they can
-%zoom in to see tiny details on a graphic.
-%
-%When placing figures in \LaTeX, it's almost always best to use
-%\verb+\includegraphics+, and to specify the  figure width as a multiple of
-%the line width as in the example below
-%{\small\begin{verbatim}
-%   \usepackage[dvips]{graphicx} ...
-%   \includegraphics[width=0.8\linewidth]
-%                   {myfile.eps}
-%\end{verbatim}
-%}
-%
-%
-%%-------------------------------------------------------------------------
-%\subsection{Color}
-%
-%Please refer to the author guidelines on the CVPR 2020 web page for a discussion
-%of the use of color in your document.
-%
-%%------------------------------------------------------------------------
-%\section{Final copy}
-%
-%You must include your signed IEEE copyright release form when you submit
-%your finished paper. We MUST have this form before your paper can be
-%published in the proceedings.
-%
-%Please direct any questions to the production editor in charge of these 
-%proceedings at the IEEE Computer Society Press: 
-%\url{https://www.computer.org/about/contact}. 
+\subsection{Triplet Loss Analysis}
+The evolution of testing on Triplet Margin Loss provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.
+Analysis of Model Iterations and Improvements: Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
+Data Augmentation: To mitigate early overfitting \ref{fig:41}, a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn affine-invariant features \ref{fig:42}.
+Optimization and Unfreezing: Transitioning from Adam to SGD yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" \ref{fig:43}. This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
+L2 Normalization and the "Scaling Problem": Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from 4.1 to 4.3. Introducing L2 normalization and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
+Optimal Model Results \ref{fig:44}: The final configuration demonstrated the robustness required for Open-Set scenarios:
+Loss and F1-Score Curves: Constant convergence was observed, with Validation Loss stabilizing around 0.45. The F1-score reached a peak of 0.775; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
+Threshold Stability: Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around 1.18. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+
+%todo: insert figures 4.1 to 4.4
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img41.pdf}
+    \caption{todo}
+    \label{fig:41}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img42.pdf}
+    \caption{todo}
+    \label{fig:42}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img43.pdf}
+    \caption{todo}
+    \label{fig:43}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img44.pdf}
+    \caption{todo}
+    \label{fig:44}
+\end{figure}
+
+
+\subsection{Contrastive Loss Analysis (Cosine)}
+
+The experimental analysis of the variant based on Cosine Similarity reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
+Analysis of Model Iterations and Improvements:
+Optimizer Stability: Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the SGD baseline showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
+Architectural Refinements: Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and L2 normalization, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
+Full-Scale Optimization: The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
+Optimal Model Results: The combination of Contrastive Loss and the previously optimized hyperparameters successfully established a reliable global metric:
+F1-Score and Convergence: As shown in Figure \ref{fig:433}, the validation F1-score peaked at 0.811, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy, which appears to be a more complex approach in this case.
+Threshold Stability: The distance threshold successfully stabilized at approximately 0.60. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img431.pdf}
+    \caption{todo}
+    \label{fig:431}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img432.pdf}
+    \caption{todo}
+    \label{fig:432}
+\end{figure}
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img433.pdf}
+    \caption{todo}
+    \label{fig:433}
+\end{figure}
+
+\subsection{Comparison between Baseline and Proposed Models}
+
+The following table presents the results obtained comparing the proposed models with the baseline.
+
+\begin{table}[h]
+\begin{center}
+\begin{tabular}{|l|c|c|c|}
+\hline
+Metric & Testing Triplet & Testing Cosine & Baseline \\
+\hline\hline
+Accuracy & 0.8602 & 0.8794 & 0.8618 \\
+Precision & 0.2660 & 0.2787 & 0.2473 \\
+Recall & 0.4503 & 0.4390 & 0.4003 \\
+F1-Score & 0.2679 & 0.2769 & 0.2432 \\
+R@95p & 0.2840 & 0.2999 & 0.2610 \\
+mAP & 0.4460 & 0.4550 & 0.4176 \\
+J & 0.3926 & 0.3801 & 0.3716 \\
+\hline
+\end{tabular}
+\end{center}
+\caption{Comparison between Baseline and Proposed Models.}
+\end{table}
+
+The superiority of the proposed model stems primarily from three factors.
+First, domain specialization: while the ResNet-50 baseline is pre-trained on ImageNet and therefore optimized for natural objects, our model was retrained on LogoDet-3K. Thanks to progressive unfreezing, the convolutional filters adapted to the morphological characteristics of the logos, improving feature discriminability.
+Second, the structuring of the embedding space. In the baseline, the embeddings are not explicitly optimized to separate the classes, while the use of Triplet and Contrastive Loss forces the formation of compact clusters for the same brand and increases the distance between different classes. This is reflected in the improvement in mAP (from 0.4176 to 0.4550), a sign of more accurate and consistent ranking.
+Finally, an increase in retrieval capacity is observed, with an improvement in recall (from 0.4003 to 0.4725). The model therefore recovers a greater share of correct matches within the database.
+
+\subsection{Qualitative Analysis of Retrieval Behavior}
+
+Figure 1 shows a qualitative example of the retrieval system's behavior in the embedding space. The image on the left represents the query (anchor), belonging to the Count Chocula brand. In the center is a positive sample of the same brand, while on the right is a negative sample belonging to a different brand.
+The model assigns a similarity of 0.5291 to the positive sample, sufficient to pass the decision threshold and produce a correct match. Conversely, the negative sample achieves a significantly lower similarity (0.3422) and is correctly rejected. This behavior highlights the model's ability to place images of the same brand in adjacent regions of the latent space, while maintaining a clear separation from different brands.
+The most notable aspect of this example is not the absolute value of the similarity, but the stable margin between positive and negative. The distance between the two scores is sufficient to ensure a robust decision even in the presence of visual variations or samples belonging to unseen classes. In an open-set retrieval system, reliability depends on how consistently the model maintains this separation margin over time.
+The figure also highlights how the model doesn't limit itself to recognizing superficial elements of the logo, but is able to capture morphological features shared between objects of the same brand even when the visual appearance varies significantly (e.g., packaging vs. character figurines). This suggests that the learned embedding space does not simply encode textures or colors, but a more abstract semantic representation of the brand's visual identity.
+This qualitative example supports the quantitative results obtained in the experiments: the stability of the decision threshold observed during training translates into consistent system behavior even in real-world retrieval cases.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img5.pdf}
+    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative).}
+    \label{fig:5}
+\end{figure}
+
+
+\subsection{Qualitative Embedding Analysis}
+
+Visualization of the latent space using t-SNE qualitatively confirms the quantitative results. The points corresponding to the different brands form distinct and relatively compact clusters, with a clear separation between different categories.
+This behavior suggests that the model does not simply memorize surface patterns, but learns morphological features shared between logos of the same brand.
+
+\begin{figure}[h]
+    \centering
+    \includegraphics[width=\linewidth]{img45.pdf}
+    \caption{3D t-SNE Visualization of 10 Brands.}
+    \label{fig:45}   
+\end{figure}
+
+\section{Conclusion}
+
+This project demonstrated that logo recognition in open-set scenarios can be successfully addressed through Deep Metric Learning.
+The adoption of an embedding-based paradigm allowed us to overcome the limitations of closed classification systems, enabling the retrieval of brands never seen in the training phase.
+Experimental analysis highlighted a key result: the quality of a retrieval system is not measured solely by peak accuracy, but by the stability of the separation between classes in the latent space.
+A robust model is one capable of maintaining a consistent decision threshold over time, avoiding oscillations that could compromise the system's reliability.
+In this context, Triplet Loss has been shown to produce a more stable embedding space geometry, making it more suitable for industrial applications such as copyright protection and automatic media analysis.
 
 
 {\small
