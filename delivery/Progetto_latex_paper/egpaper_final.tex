@@ -6,6 +6,7 @@
 \usepackage{graphicx}
 \usepackage{amsmath}
 \usepackage{amssymb}
+\usepackage{float}
 
 % Include other packages here, before hyperref.
 
@@ -187,39 +188,42 @@ The training phase followed an iterative optimization strategy to achieve the be
 
 
 \subsection{Triplet Loss Analysis}
-The evolution of testing on Triplet Margin Loss provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.
-Analysis of Model Iterations and Improvements: Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
-Data Augmentation: To mitigate early overfitting \ref{fig:41}, a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn affine-invariant features \ref{fig:42}.
-Optimization and Unfreezing: Transitioning from Adam to SGD yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" \ref{fig:43}. This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
-L2 Normalization and the "Scaling Problem": Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from 4.1 to 4.3. Introducing L2 normalization and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
-Optimal Model Results \ref{fig:44}: The final configuration demonstrated the robustness required for Open-Set scenarios:
-Loss and F1-Score Curves: Constant convergence was observed, with Validation Loss stabilizing around 0.45. The F1-score reached a peak of 0.775; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
-Threshold Stability: Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around 1.18. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+The evolution of testing on \textbf{Triplet Margin Loss} provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.\vspace{1em}
 
-%todo: insert figures 4.1 to 4.4
+\textbf{Analysis of Model Iterations and Improvements:} Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
+\begin{itemize}
+    \item \textbf{Data Augmentation:} To mitigate early overfitting (Figure \ref{fig:41}), a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn \textbf{affine-invariant features} (Figure \ref{fig:42}).
+    \item \textbf{Optimization and Unfreezing:} Transitioning from Adam to \textbf{SGD} yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" (Figure \ref{fig:43}). This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
+    \item \textbf{L2 Normalization and the "Scaling Problem":} Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from 4.1 to 4.3. Introducing \textbf{L2 normalization} and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:44}):} The final configuration demonstrated the robustness required for Open-Set scenarios:
+\begin{itemize}
+    \item \textbf{Loss and F1-Score Curves:} Constant convergence was observed, with Validation Loss stabilizing around 0.45. The \textbf{F1-score reached a peak of 0.775}; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
+    \item \textbf{Threshold Stability:} Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around \textbf{1.18}. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+\end{itemize}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img41.pdf}
     \caption{todo}
     \label{fig:41}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img42.pdf}
     \caption{todo}
     \label{fig:42}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img43.pdf}
     \caption{todo}
     \label{fig:43}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img44.pdf}
     \caption{todo}
@@ -229,30 +233,35 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
 
 \subsection{Contrastive Loss Analysis (Cosine)}
 
-The experimental analysis of the variant based on Cosine Similarity reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
-Analysis of Model Iterations and Improvements:
-Optimizer Stability: Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the SGD baseline showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
-Architectural Refinements: Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and L2 normalization, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
-Full-Scale Optimization: The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
-Optimal Model Results: The combination of Contrastive Loss and the previously optimized hyperparameters successfully established a reliable global metric:
-F1-Score and Convergence: As shown in Figure \ref{fig:433}, the validation F1-score peaked at 0.811, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy, which appears to be a more complex approach in this case.
-Threshold Stability: The distance threshold successfully stabilized at approximately 0.60. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+The experimental analysis of the variant based on \textbf{Cosine Similarity} reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
 
-\begin{figure}[h]
+\textbf{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs:
+\begin{itemize}
+    \item \textbf{Optimizer Stability:} Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the \textbf{SGD baseline} showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
+    \item \textbf{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
+    \item \textbf{Full-Scale Optimization:} The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:433}):} The combination of \textbf{Contrastive Loss} and the previously optimized hyperparameters successfully established a reliable global metric:
+\begin{itemize}
+    \item \textbf{F1-Score and Convergence:} As visible in the graphs for the optima model, the \textbf{validation F1-score peaked at 0.811}, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy.
+    \item \textbf{Threshold Stability:} The \textbf{distance threshold} successfully stabilized at approximately \textbf{0.60}. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+\end{itemize}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img431.pdf}
     \caption{todo}
     \label{fig:431}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img432.pdf}
     \caption{todo}
     \label{fig:432}
 \end{figure}
 
-\begin{figure}[h]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\linewidth]{img433.pdf}
     \caption{todo}
