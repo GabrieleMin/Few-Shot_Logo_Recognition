@@ -67,6 +67,8 @@ address\\
    compared to standard classification methods.
 \end{abstract}
 
+
+
 %%%%%%%%% BODY TEXT
 \section{Introduction}
 
@@ -88,8 +90,8 @@ To support training, a dynamic transfer learning management system based on prog
 
 
 \section{Data}
-For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which currently
- represents one of the largest and most complex benchmarks for logo recognition. we take LogoDet-3k at this link: \url{ https://github.com/Wangjing1551/LogoDet-3K-Dataset}.
+For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which currently represents one of the largest and most complex benchmarks for logo recognition. This work is based on the use of the LogoDet-3K dataset, publicly accessible via the repository: \url{ https://github.com/Wangjing1551/LogoDet-3K-Dataset}.
+we also share our pre-processed dataset at: \url{https://drive.google.com/file/d/1yFiHK_r6ae8Xs8uls8F-ccXHPpqVyh74/view?usp=sharing}.
 
 
 \subsection{Dataset Description}
@@ -177,6 +179,30 @@ The main metrics calculated in the validation loop are:
 
 \section{experiments}
 The experimental analysis consisted of a series of tests aimed at identifying the optimal combination of hyperparameters, following different transfer learning strategies.
+
+\begin{table}[H]
+    \centering
+    \renewcommand{\arraystretch}{1.2}
+    \caption{Range of hyperparameters (Minimum - Maximum) observed across all experimental configurations.}
+    \label{tab:hyper_ranges}
+    \begin{tabularx}{\linewidth}{|X|c|c|}
+        \hline
+        \textbf{Hyperparameter} & \textbf{Min Value} & \textbf{Max Value} \\
+        \hline
+        Batch Size & 32 & 256 \\
+        \hline
+        Learning Rate (Initial) & $1.0 \times 10^{-4}$ & $1.0 \times 10^{-1}$ \\
+        \hline
+        Margin & 0.2 & 1.0 \\
+        \hline
+        Weight Decay & 0 & $1.0 \times 10^{-4}$ \\
+        \hline
+        Backbone LR Factor & 0.03 & 0.5 \\
+        \hline
+        Embedding Output Dim. & 128 & 256 \\
+        \hline
+    \end{tabularx}
+\end{table}
 
 \subsection{Configuring Training and Testing}
 
@@ -637,23 +663,15 @@ This behavior suggests that the model does not simply memorize surface patterns,
 \subsection{Future Developments}
 
 The results obtained highlight the inherent complexity of open-set logo recognition, where the model must generalize to brands never seen during the training phase. 
-
 One of the main limitation of this work was the available hardware. Early experiments were conducted locally on a reduced subset of the dataset due to computational constraints, limiting extensive experimentation and hyperparameter tuning. The final training runs were performed on Google Colab using A100 paid instances for efficiency, however broader access to dedicated high-performance hardware would likely have enabled more thorough experimentation and most likely improved results.
-
 Another avenue for future improvement lies in the refinement of sampling strategies; the current Triplet Loss implementation could be significantly enhanced by introducing \textit{Hard Negative Mining}. By specifically selecting the most challenging positives and negatives for each anchor, the model would be forced to learn finer discriminative details rather than settling for easy ones.
-
 Furthermore, a significant challenge was the decision to process uncropped images. Consequently, the model had to navigate "contextual noise," learning to distinguish logos within complex backgrounds like clothing, toys, etc. Future iterations could incorporate an object detection stage to isolate the region of interest (for example using a Faster R-CNN). This would allow the backbone to focus exclusively on brand-specific morphology, likely bridging the remaining performance gap. Finally, exploring modern architectures such as Transformers could offer a more robust alternative to the ResNet-50 baseline.
-
 Other losses could also be experimented like Proxy-Anchor Loss, which teaches the network a proxy vector for each class; these proxies are compared to each image, and through training, each image is pushed toward one of the proxies, theoretically allowing for greater separation between class clusters
 
 \section{Conclusion}
-
 This project served as a comprehensive bridge between the theoretical frameworks discussed in class and the practical challenges of modern computer vision. Throughout the development process, we faced significant constraints that mirrored real-world AI development, such as hardware constrain, difficulty of the task and complex hyper parameters tuning.
-
 We put into practice several strategies explored during the course, including data augmentation, dropout, batch normalization and differential learning rates, to mitigate the constant risk of overfitting.
-
 The experience of training on uncropped images also provided a valuable lesson in the impact of contextual noise. We learned that without a localized region of interest, the model is forced to interpret the entire scene, which adds a layer of complexity. 
-
 Ultimately, we are satisfied with having successfully applied these advanced techniques to a real-world scenario. This project allowed us to move beyond the theory of metric learning to build a compact and functional system, proving that even with limited resources, it is possible to translate classroom concepts into a functioning retrieval pipeline.
 
 {\small

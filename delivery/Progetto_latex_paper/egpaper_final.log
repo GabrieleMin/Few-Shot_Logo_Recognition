@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  11 FEB 2026 21:24
+This is pdfTeX, Version 3.141592653-2.6-1.40.25 (MiKTeX 24.1) (preloaded format=pdflatex 2025.9.24)  11 FEB 2026 21:59
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -381,153 +381,166 @@ pdfTeX warning: pdflatex (file ./imm/1immintro.pdf): PDF inclusion: found PDF ve
 <imm/1immintro.pdf, id=3, 520.34402pt x 239.09325pt>
 File: imm/1immintro.pdf Graphic file (type pdf)
 <use imm/1immintro.pdf>
-Package pdftex.def Info: imm/1immintro.pdf  used on input line 80.
+Package pdftex.def Info: imm/1immintro.pdf  used on input line 82.
 (pdftex.def)             Requested size: 237.13594pt x 108.9627pt.
 
-Underfull \hbox (badness 2119) in paragraph at lines 91--93
-\OT1/ptm/m/n/10 com-plex bench-marks for logo recog-ni-tion. we take
+Underfull \hbox (badness 5316) in paragraph at lines 93--95
+\OT1/ptm/m/n/10 ac-ces-si-ble via the repos-i-tory: []$\OT1/pcr/m/n/10 https : / / github .
  []
 
 
-Underfull \hbox (badness 3128) in paragraph at lines 91--93
-\OT1/ptm/m/n/10 LogoDet-3k at this link: []$\OT1/pcr/m/n/10 https : / / github . com /
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+\OT1/pcr/m/n/10 com / Wangjing1551 / LogoDet-[]3K-[]Dataset$[]\OT1/ptm/m/n/10 .
  []
 
 
-Underfull \hbox (badness 1642) in paragraph at lines 96--103
-[]\OT1/ptm/m/n/10 LogoDet-3K com-prises 3,000 logo cat-e-gories, with
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+\OT1/ptm/m/n/10 we also share our pre-processed dataset at:
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+[]$\OT1/pcr/m/n/10 https : / / drive . google . com / file / d / 1yFiHK _
+ []
+
+
+Underfull \hbox (badness 10000) in paragraph at lines 93--95
+\OT1/pcr/m/n/10 r6ae8Xs8uls8F-[]ccXHPpqVyh74 / view ? usp =
  []
 
 [4321{C:/Users/Lenovo/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/Lenovo/Desktop/altro/imp/fonts/enc/dvips/base/8r.enc}
 
 
  <./imm/1immintro.pdf>]
+Underfull \hbox (badness 1642) in paragraph at lines 98--105
+[]\OT1/ptm/m/n/10 LogoDet-3K com-prises 3,000 logo cat-e-gories, with
+ []
+
+
 
 pdfTeX warning: pdflatex (file ./imm/logodet3k_with_red_dots.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<imm/logodet3k_with_red_dots.pdf, id=25, 1168.46535pt x 650.48624pt>
+<imm/logodet3k_with_red_dots.pdf, id=26, 1168.46535pt x 650.48624pt>
 File: imm/logodet3k_with_red_dots.pdf Graphic file (type pdf)
 <use imm/logodet3k_with_red_dots.pdf>
-Package pdftex.def Info: imm/logodet3k_with_red_dots.pdf  used on input line 107.
+Package pdftex.def Info: imm/logodet3k_with_red_dots.pdf  used on input line 109.
 (pdftex.def)             Requested size: 237.13594pt x 132.01057pt.
-LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 129.
+LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 131.
 (C:\Users\Lenovo\Desktop\altro\imp\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
 )
-Underfull \hbox (badness 3260) in paragraph at lines 130--131
+Underfull \hbox (badness 3260) in paragraph at lines 132--133
 []\OT1/ptm/b/n/10 Augmentation: \OT1/ptm/m/n/10 Dur-ing train-ing, trans-for-ma-tions
  []
 
 
-Underfull \hbox (badness 10000) in paragraph at lines 130--131
+Underfull \hbox (badness 10000) in paragraph at lines 132--133
 \OT1/ptm/m/n/10 are ap-plied, in-clud-ing \OT1/pcr/m/n/10 RandomResizedCrop\OT1/ptm/m/n/10 ,
  []
 
 [4322 <./imm/logodet3k_with_red_dots.pdf>]
-Underfull \hbox (badness 1107) in paragraph at lines 172--173
+Underfull \hbox (badness 1107) in paragraph at lines 174--175
 []\OT1/ptm/b/n/10 Precision and Re-call\OT1/ptm/m/n/10 : Cal-cu-lated to an-a-lyze the
  []
 
 [4323]
-<imm/img41.pdf, id=57, 167.62625pt x 303.1325pt>
+<imm/img41.pdf, id=62, 167.62625pt x 303.1325pt>
 File: imm/img41.pdf Graphic file (type pdf)
 <use imm/img41.pdf>
-Package pdftex.def Info: imm/img41.pdf  used on input line 215.
+Package pdftex.def Info: imm/img41.pdf  used on input line 241.
 (pdftex.def)             Requested size: 118.56796pt x 214.41612pt.
-<imm/img42.pdf, id=60, 151.56625pt x 285.065pt>
+<imm/img42.pdf, id=65, 151.56625pt x 285.065pt>
 File: imm/img42.pdf Graphic file (type pdf)
 <use imm/img42.pdf>
-Package pdftex.def Info: imm/img42.pdf  used on input line 268.
+Package pdftex.def Info: imm/img42.pdf  used on input line 294.
 (pdftex.def)             Requested size: 118.56796pt x 223.0066pt.
-
-Overfull \vbox (49.96294pt too high) has occurred while \output is active []
-
- [4324 <./imm/img41.pdf> <./imm/img42.pdf>]
-<imm/img43.pdf, id=74, 155.58125pt x 285.065pt>
+<imm/img43.pdf, id=66, 155.58125pt x 285.065pt>
 File: imm/img43.pdf Graphic file (type pdf)
 <use imm/img43.pdf>
-Package pdftex.def Info: imm/img43.pdf  used on input line 311.
+Package pdftex.def Info: imm/img43.pdf  used on input line 337.
 (pdftex.def)             Requested size: 118.56796pt x 217.24756pt.
-<imm/img44.pdf, id=75, 151.56625pt x 268.00125pt>
+
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4324 <./imm/img42.pdf>]
+Overfull \vbox (44.20389pt too high) has occurred while \output is active []
+
+<imm/img44.pdf, id=78, 151.56625pt x 268.00125pt>
 File: imm/img44.pdf Graphic file (type pdf)
 <use imm/img44.pdf>
-Package pdftex.def Info: imm/img44.pdf  used on input line 352.
+Package pdftex.def Info: imm/img44.pdf  used on input line 378.
 (pdftex.def)             Requested size: 118.56796pt x 209.65761pt.
 
-Underfull \hbox (badness 4518) in paragraph at lines 386--386
+Underfull \hbox (badness 4518) in paragraph at lines 412--412
 []|\OT1/ptm/m/n/10 MLP ($\OT1/cmr/m/n/10 2048 \OMS/cmsy/m/n/10 ! \OT1/cmr/m/n/10 256 \OMS/cmsy/m/n/10 !
  []
 
+[4325 <./imm/img41.pdf> <./imm/img43.pdf> <./imm/img44.pdf>]
+<imm/img431.pdf, id=97, 151.56625pt x 289.08pt>
+File: imm/img431.pdf Graphic file (type pdf)
+<use imm/img431.pdf>
+Package pdftex.def Info: imm/img431.pdf  used on input line 434.
+(pdftex.def)             Requested size: 118.56796pt x 226.14754pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4325 <./imm/img43.pdf> <./imm/img44.pdf>]
-<imm/img431.pdf, id=95, 151.56625pt x 289.08pt>
-File: imm/img431.pdf Graphic file (type pdf)
-<use imm/img431.pdf>
-Package pdftex.def Info: imm/img431.pdf  used on input line 408.
-(pdftex.def)             Requested size: 118.56796pt x 226.14754pt.
 
-Underfull \hbox (badness 1910) in paragraph at lines 444--444
+Underfull \hbox (badness 1910) in paragraph at lines 470--470
 \OT1/ptm/m/n/10 ta-tion ($\OMS/cmsy/m/n/10 ^^F\OT1/cmr/m/n/10 15[]$\OT1/ptm/m/n/10 ), Ran-domGrayscale
  []
 
-
-Underfull \vbox (badness 10000) has occurred while \output is active []
-
-<imm/img432.pdf, id=98, 152.57pt x 287.0725pt>
+<imm/img432.pdf, id=100, 152.57pt x 287.0725pt>
 File: imm/img432.pdf Graphic file (type pdf)
 <use imm/img432.pdf>
-Package pdftex.def Info: imm/img432.pdf  used on input line 450.
+Package pdftex.def Info: imm/img432.pdf  used on input line 476.
 (pdftex.def)             Requested size: 118.56796pt x 223.10527pt.
-<imm/img433.pdf, id=99, 152.57pt x 284.06125pt>
+<imm/img433.pdf, id=101, 152.57pt x 284.06125pt>
 File: imm/img433.pdf Graphic file (type pdf)
 <use imm/img433.pdf>
-Package pdftex.def Info: imm/img433.pdf  used on input line 489.
+Package pdftex.def Info: imm/img433.pdf  used on input line 515.
 (pdftex.def)             Requested size: 118.56796pt x 220.765pt.
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4326 <./imm/img431.pdf> <./imm/img432.pdf>] [4327 <./imm/img433.pdf>]
+ [4326 <./imm/img431.pdf>]
+Underfull \vbox (badness 10000) has occurred while \output is active []
+
+ [4327 <./imm/img432.pdf> <./imm/img433.pdf>]
 
 pdfTeX warning: pdflatex (file ./imm/img5.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<imm/img5.pdf, id=118, 453.23227pt x 159.10141pt>
+<imm/img5.pdf, id=122, 453.23227pt x 159.10141pt>
 File: imm/img5.pdf Graphic file (type pdf)
 <use imm/img5.pdf>
-Package pdftex.def Info: imm/img5.pdf  used on input line 619.
+Package pdftex.def Info: imm/img5.pdf  used on input line 645.
 (pdftex.def)             Requested size: 118.56796pt x 41.62029pt.
 
 
 pdfTeX warning: pdflatex (file ./imm/img45.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
-<imm/img45.pdf, id=119, 453.65485pt x 375.66045pt>
+<imm/img45.pdf, id=123, 453.65485pt x 375.66045pt>
 File: imm/img45.pdf Graphic file (type pdf)
 <use imm/img45.pdf>
-Package pdftex.def Info: imm/img45.pdf  used on input line 632.
+Package pdftex.def Info: imm/img45.pdf  used on input line 658.
 (pdftex.def)             Requested size: 118.56796pt x 98.17957pt.
 
-Underfull \hbox (badness 1168) in paragraph at lines 641--642
-\OT1/ptm/m/n/10 how-ever broader ac-cess to ded-i-cated high-performance
- []
+LaTeX Warning: `h' float specifier changed to `ht'.
 
-[4328 <./imm/img5.pdf> <./imm/img45.pdf>] (egpaper_final.bbl) [4329
-
-] (egpaper_final.aux)
+[4328 <./imm/img5.pdf>] (egpaper_final.bbl) [4329 <./imm/img45.pdf>] (egpaper_final.aux)
  ***********
 LaTeX2e <2023-11-01> patch level 1
 L3 programming layer <2024-01-04>
  ***********
  ) 
 Here is how much of TeX's memory you used:
- 11691 strings out of 474486
- 185107 string characters out of 5748911
- 1946542 words of memory out of 5000000
- 33752 multiletter control sequences out of 15000+600000
+ 11693 strings out of 474486
+ 185141 string characters out of 5748911
+ 1945542 words of memory out of 5000000
+ 33753 multiletter control sequences out of 15000+600000
  585971 words of font info for 98 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
- 75i,14n,79p,1088b,549s stack positions out of 10000i,1000n,20000p,200000b,200000s
+ 75i,14n,79p,1088b,513s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmr9.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/public/amsfonts/cm/cmsy9.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmb8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmr8a.pfb><C:/Users/Lenovo/Desktop/altro/imp/fonts/type1/urw/times/utmri8a.pfb>
-Output written on egpaper_final.pdf (9 pages, 1807547 bytes).
+Output written on egpaper_final.pdf (9 pages, 1811599 bytes).
 PDF statistics:
- 198 PDF objects out of 1000 (max. 8388607)
- 47 named destinations out of 1000 (max. 500000)
+ 202 PDF objects out of 1000 (max. 8388607)
+ 48 named destinations out of 1000 (max. 500000)
  56 words of extra memory for PDF output out of 10000 (max. 10000000)
 
