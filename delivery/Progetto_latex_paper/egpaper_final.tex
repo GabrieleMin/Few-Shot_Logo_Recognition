@@ -112,7 +112,7 @@ LogoDet-3K comprises 3,000 logo categories, with approximately 200,000 manually
 The preparation pipeline, aimed at optimizing dataset integrity and loading efficiency, was divided into three phases.
 \textbf{Brand Consolidation}: Automated cleanup was performed to merge duplicate folders (e.g., alpinestart-1 and alpinestars-2 contained the same information) and normalize labels in XML annotations.
 \textbf{Static Indexing}: To accelerate data loading, a unique brand-to-index mapping was generated offline, injected directly into the XML files, and saved in a CSV lookup file for quick reference.
-\textbf{Brand-Wise Split}: The dataset was split offline, isolating 10\% of the brands for the test set. This separation at the class level (rather than at the individual image level) ensures rigorous open-set evaluation, testing the model on categories never encountered during training.
+\textbf{Brand-Wise Split}: The dataset was split offline, isolating 10\% of the brands for the test set, randomly selected from each category to guarantee the same data distribution. This separation at the class level (rather than at the individual image level) ensures rigorous open-set evaluation, testing the model on categories never encountered during training.
 At runtime, the system manages an online split of the remaining data using the getTrainValPaths function. This allows you to dynamically split the brands between Training and Validation (70/30 split for routine tests and 80/20 for final runs), ensuring that validation always occurs on classes not used for weight updating.
 
 \subsection{Sampling and Data Loading Strategies}
@@ -191,16 +191,19 @@ The training phase followed an iterative optimization strategy to achieve the be
 
 
 \subsection{Triplet Loss Analysis}
-The evolution of testing on Triplet Margin Loss provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.
-Analysis of Model Iterations and Improvements: Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
-Data Augmentation: To mitigate early overfitting \ref{fig:41}, a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn affine-invariant features \ref{fig:42}.
-Optimization and Unfreezing: Transitioning from Adam to SGD yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" \ref{fig:43}. This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
-L2 Normalization and the "Scaling Problem": Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from \ref{fig:41} to \ref{fig:43}. Introducing L2 normalization and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
-Optimal Model Results \ref{fig:44}: The final configuration demonstrated the robustness required for Open-Set scenarios:
-Loss and F1-Score Curves: Constant convergence was observed, with Validation Loss stabilizing around 0.45. The F1-score reached a peak of 0.775; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
-Threshold Stability: Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around 1.18. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+The evolution of testing on \textbf{Triplet Margin Loss} provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.\vspace{1em}
 
-%todo: insert figures 4.1 to 4.4
+\textbf{Analysis of Model Iterations and Improvements:} Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
+\begin{itemize}
+    \item \textbf{Data Augmentation:} To mitigate early overfitting (Figure \ref{fig:41}), a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn \textbf{affine-invariant features} (Figure \ref{fig:42}).
+    \item \textbf{Optimization and Unfreezing:} Transitioning from Adam to \textbf{SGD} yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" (Figure \ref{fig:43}). This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
+    \item \textbf{L2 Normalization and the "Scaling Problem":} Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from 4.1 to 4.3. Introducing \textbf{L2 normalization} and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:44}):} The final configuration demonstrated the robustness required for Open-Set scenarios:
+\begin{itemize}
+    \item \textbf{Loss and F1-Score Curves:} Constant convergence was observed, with Validation Loss stabilizing around 0.45. The \textbf{F1-score reached a peak of 0.775}; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
+    \item \textbf{Threshold Stability:} Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around \textbf{1.18}. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+\end{itemize}
 
 \begin{figure}[H]
     \centering
@@ -211,24 +214,34 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
 
 \begin{table}[H]
     \centering
-    % Aumenta leggermente lo spazio verticale per non far toccare le linee
     \renewcommand{\arraystretch}{1.2}
-    \caption{Iperparametri di configurazione - Test 1}
     \caption{Configuration hyperparameters related to the results in Figure \ref{fig:41}.}
     \label{tab:config_1}
     \begin{tabularx}{\linewidth}{|l|X|}
         \hline
         \textbf{hyperparameter} & \textbf{Value} \\
         \hline
+        Dataset Size & 10000 \\
+        \hline
         Batch Size & 32 \\
+        \hline
+        Optimizer & Adam \\
+        \hline
+        Weight Decay & None \\
         \hline
         Margin & 1.0 \\
         \hline
         Learning Rate & 0.001 \\
         \hline
-        Embedding Layer & Sequential (Linear $2048 \to 128$) \\
+        Backbone LR Reduction & None \\
         \hline
-        Freeze & 5 (Fixed) \\
+        Output Norm. & No \\
+        \hline
+        Embedding Layer & MLP ($2048 \to 128$) \\
+        \hline
+        Freeze Strat. & None \\
+        \hline
+        Data Aug. & None \\
         \hline
     \end{tabularx}
 \end{table}
@@ -253,11 +266,17 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
         \hline
         Batch Size & 64 \\
         \hline
+        Optimizer & Adam \\
+        \hline
+        Weight Decay & None \\
+        \hline
         Margin & 1.0 \\
         \hline
         Learning Rate & $1.0 \times 10^{-3} \to 1.0 \times 10^{-4}$ (Decay factor: 0.1) \\
         \hline
-        Weight Decay & True \\
+        Backbone LR Reduction & None \\
+        \hline
+        Output Norm. & No \\
         \hline
         Embedding Layer & MLP ($2048 \to 1024 \to \text{ReLU} \to 128$) \\
         \hline
@@ -284,21 +303,23 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
         \hline
         \textbf{hyperparameter} & \textbf{Value} \\
         \hline
-        Optimizer & SGD (Momentum $= 0.9$) \\
+        Dataset Size & 10000 \\
         \hline
         Batch Size & 64 \\
         \hline
-        Dataset Size & 10000 \\
+        Optimizer & SGD (Momentum $= 0.9$) \\
+        \hline
+        Weight Decay & 0.0001 \\
         \hline
         Margin & 1.0 \\
         \hline
-        Learning Rate & $5.0 \times 10^{-2}$ (Constant, Factor: 1) \\
+        Learning Rate & $5.0 \times 10^{-2}$ (Decay Factor: 1) \\
         \hline
-        Weight Decay & True \\
+        Backbone LR Factor & None \\
         \hline
         Embedding Layer & MLP ($2048 \to 1024 \to \text{ReLU} \to 128$) \\
         \hline
-        Freeze Strategy & $5 \to 4$ (ep 5) $\to 5$ (ep 15) $\to 3$ (ep 22) \\
+        Freeze Strategy & $5 \to 4$ (ep 5), $4 \to 5$ (ep 15), $5 \to 3$ (ep 22) \\
         \hline
         Data Augmentation & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
         \hline
@@ -325,7 +346,7 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
         \hline
         Batch Size & 256 \\
         \hline
-        Optimizer & SGD \\
+        Optimizer & SGD (Momentum $= 0.9$) \\
         \hline
         Weight Decay & $0.0001$ \\
         \hline
@@ -335,7 +356,7 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
         \hline
         Backbone LR Factor & $0.03$ (rispetto al LR della Head) \\
         \hline
-        Embedding Layer & MLP ($2048 \to 256 \to \text{BatchNorm} \to \text{ReLU} \to \text{Dropout}(p=0.3) \to 128$) \\
+        Embedding Layer & MLP ($2048 \to 256 \to \text{BatchNorm1d} \to \text{ReLU} \to \text{Dropout}(p=0.3) \to 128$) \\
         \hline
         Freeze Strategy & $4 \to 3$ (Sblocco all'epoca 15) \\
         \hline
@@ -347,14 +368,19 @@ Threshold Stability: Unlike "unconstrained" models, the optimal distance thresho
 
 \subsection{Contrastive Loss Analysis (Cosine)}
 
-The experimental analysis of the variant based on Cosine Similarity reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
-Analysis of Model Iterations and Improvements:
-Optimizer Stability: Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the SGD baseline showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
-Architectural Refinements: Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and L2 normalization, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
-Full-Scale Optimization: The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
-Optimal Model Results: The combination of Contrastive Loss and the previously optimized hyperparameters successfully established a reliable global metric:
-F1-Score and Convergence: As shown in Figure \ref{fig:433}, the validation F1-score peaked at 0.811, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy, which appears to be a more complex approach in this case.
-Threshold Stability: The distance threshold successfully stabilized at approximately 0.60. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+The experimental analysis of the variant based on \textbf{Cosine Similarity} reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
+
+\textbf{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs:
+\begin{itemize}
+    \item \textbf{Optimizer Stability:} Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the \textbf{SGD baseline} showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
+    \item \textbf{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
+    \item \textbf{Full-Scale Optimization:} The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:433}):} The combination of \textbf{Contrastive Loss} and the previously optimized hyperparameters successfully established a reliable global metric:
+\begin{itemize}
+    \item \textbf{F1-Score and Convergence:} As visible in the graphs for the optima model, the \textbf{validation F1-score peaked at 0.811}, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy.
+    \item \textbf{Threshold Stability:} The \textbf{distance threshold} successfully stabilized at approximately \textbf{0.60}. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+\end{itemize}
 
 \begin{figure}[H]
     \centering
@@ -537,24 +563,27 @@ This behavior suggests that the model does not simply memorize surface patterns,
     \label{fig:45}   
 \end{figure}
 
+\subsection{Future Developments}
+
+The results obtained highlight the inherent complexity of open-set logo recognition, where the model must generalize to brands never seen during the training phase. 
+
+One of the main limitation of this work was the available hardware. Early experiments were conducted locally on a reduced subset of the dataset due to computational constraints, limiting extensive experimentation and hyperparameter tuning. The final training runs were performed on Google Colab using A100 paid instances for efficiency, however broader access to dedicated high-performance hardware would likely have enabled more thorough experimentation and most likely improved results.
+
+Another avenue for future improvement lies in the refinement of sampling strategies; the current Triplet Loss implementation could be significantly enhanced by introducing \textit{Hard Negative Mining}. By specifically selecting the most challenging positives and negatives for each anchor, the model would be forced to learn finer discriminative details rather than settling for easy ones.
+
+Furthermore, a significant challenge was the decision to process uncropped images. Consequently, the model had to navigate "contextual noise," learning to distinguish logos within complex backgrounds like clothing, toys, etc. Future iterations could incorporate an object detection stage to isolate the region of interest (for example using a Faster R-CNN). This would allow the backbone to focus exclusively on brand-specific morphology, likely bridging the remaining performance gap. Finally, exploring modern architectures such as Transformers could offer a more robust alternative to the ResNet-50 baseline.
+
+Other losses could also be experimented like Proxy-Anchor Loss, which teaches the network a proxy vector for each class; these proxies are compared to each image, and through training, each image is pushed toward one of the proxies, theoretically allowing for greater separation between class clusters
+
 \section{Conclusion}
 
-This project demonstrated that logo recognition in open-set scenarios can be successfully addressed through Deep Metric Learning.
-The adoption of an embedding-based paradigm allowed us to overcome the limitations of closed classification systems, enabling the retrieval of brands never seen in the training phase.
-Experimental analysis highlighted a key result: the quality of a retrieval system is not measured solely by peak accuracy, but by the stability of the separation between classes in the latent space.
-A robust model is one capable of maintaining a consistent decision threshold over time, avoiding oscillations that could compromise the system's reliability.
-In this context, Triplet Loss has been shown to produce a more stable embedding space geometry, making it more suitable for industrial applications such as copyright protection and automatic media analysis.
+This project served as a comprehensive bridge between the theoretical frameworks discussed in class and the practical challenges of modern computer vision. Throughout the development process, we faced significant constraints that mirrored real-world AI development, such as hardware constrain, difficulty of the task and complex hyper parameters tuning.
 
-\subsection{Problems encountered}
+We put into practice several strategies explored during the course, including data augmentation, dropout, batch normalization and differential learning rates, to mitigate the constant risk of overfitting.
 
-During training and testing, we were severely limited by the computational resources available to us; for this reason, we partially ran the model locally on our devices with a limited number of samples. Additionally, we also used Colab's A100 units, mitigating but not completely solving the problem. By limiting ourselves to a portion of the LogoDet-3K dataset, we don't know how the learning would have performed on the entire dataset.
+The experience of training on uncropped images also provided a valuable lesson in the impact of contextual noise. We learned that without a localized region of interest, the model is forced to interpret the entire scene, which adds a layer of complexity. 
 
-Overfitting: The most prevalent problem during the training phases was the strong tendency towards overfitting; this was the focus of hyperparameter improvement. We used data augmentation to make the model more resilient to brand distortions. Of all the data augmentation techniques, we avoided image cropping; this makes the task much more complex. At the same time, we reduced the backbone learning rate to avoid feature degradation, thus avoiding a loss of backbone generalization and recall of key features. We also used the dropout technique to develop a more robust model, reducing error variance. Seeking to further improve the model's performance, we applied normalization to each branch; this, not reflecting normalization across the entire dataset, introduces statistical noise from the mean and variance approximations computed on the mini-batch. The effect on training performance is similar to dropout, promoting faster convergence.
-
-\subsection{future developments}
-
-Better results can likely be achieved by training the network on triplets, using hard negative mining or hard example mining; this would theoretically improve robustness by selecting the most informative triplets for training, i.e., those in which the "positive" image is distant from the anchor and the "negative" image is close to the anchor, forcing the network to correct the error. This would also lead to a more discriminative embedding space. For the sake of completeness, it's worth mentioning that other types of losses and architectures could be explored for this type of project; one example is Faster R-CNN. Region proposal could be better at mitigating the problem of logos presented in natural, complex, or cluttered environments, and could yield good results when used as a backbone. As mentioned, different losses could also be used, including a variation of the triplet loss in which multiple negatives are proposed simultaneously; this could accelerate convergence by providing more separation constraints between negatives and anchors/positives. Another loss that could be experimented with is Proxy-Anchor Loss, which teaches the network a proxy vector for each class; these proxies are compared to each image, and through training, each image is pushed toward one of the proxies, theoretically allowing for greater separation between class clusters.
-
+Ultimately, we are satisfied with having successfully applied these advanced techniques to a real-world scenario. This project allowed us to move beyond the theory of metric learning to build a compact and functional system, proving that even with limited resources, it is possible to translate classroom concepts into a functioning retrieval pipeline.
 
 {\small
 \bibliographystyle{ieee_fullname}
