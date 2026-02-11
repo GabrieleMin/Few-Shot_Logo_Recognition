@@ -1,4 +1,4 @@
-\newcommand{\myimgwidth}{0.5\linewidth}
+\newcommand{\myimgwidth}{0.645\linewidth}
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \usepackage{cvpr}
@@ -60,11 +60,9 @@ address\\
    Logo recognition in open-world scenarios is hampered by the long-tailed
    nature of the data. This work presents a Few-Shot Learning pipeline based
    on LogoDet-3K and Deep Metric Learning. Using a ResNet-50 optimized with
-   Triplet and Contrastive Loss, we map logos into a 128-dimensional embedding space.
+   Triplet and Contrastive Loss, we map logos into an embedding space.
    Through a progressive freezing strategy, the model learns generalized representations
-   that allow the retrieval of brands never seen during training. The results demonstrate
-   that optimizing the latent space geometry significantly improves the mAP and F1-score
-   compared to standard classification methods.
+   that allows the retrieval of brands never seen during training.
 \end{abstract}
 
 
@@ -73,7 +71,7 @@ address\\
 \section{Introduction}
 
 Accurate logo recognition has become a fundamental pillar of media analysis and copyright protection. In uncontrolled contexts, however, computer vision systems must contend with market dynamics: new brands emerge every day with unique visual identities that must be instantly identified.
-Classical classification paradigms suffer from two structural limitations: the need for enormous datasets for each class and the inability to recognize categories not included in the training set. These models are rigid and vulnerable to the long-tailed distribution of the real world, where rare classes are the norm. Few-Shot Learning emerges as a necessary solution, shifting the focus from "mnemonic recognition" to "morphological comparison."
+Classical classification paradigms suffer from two structural limitations: the need for enormous datasets for each class and the inability to recognize categories not included in the training set. Few-Shot Learning emerges as a necessary solution, shifting the focus from "mnemonic recognition" to "morphological comparison."
 In this work, we address this challenge by implementing a Deep Metric Learning system.
 
 \begin{figure}[!ht]
@@ -84,8 +82,8 @@ In this work, we address this challenge by implementing a Deep Metric Learning s
    \caption{Sample of images from LogoDet-3K}
 \end{figure}
 
-Instead of training the model to assign a label, we train it to generate embeddings in a compact latent space. Using the LogoDet-3K dataset, we developed a pipeline that extracts deep features using a ResNet-50 and projects them into a metric space where the Euclidean distance reflects the semantic relatedness of the logos. This approach not only better manages data sparsity, but also allows the system to operate on unseen classes without the need for retraining.
-The approach presented here focuses on overcoming the limitations of traditional classification through various technical solutions. The work first introduces an embedding-based architecture, developed using a linear projection head that enables a standard CNN to extract metric features. This structure allows for an in-depth comparative analysis of losses, evaluating how Triplet and Contrastive Loss (in the Euclidean and Cosine variants) influence the topology of the latent space.
+Instead of training the model to assign a label, we train it to generate embeddings in a compact latent space. Using the LogoDet-3K dataset, we developed a pipeline that extracts deep features using a ResNet-50 and projects them into a metric space where the distance reflects the similarity of the logos. This approach not only better manages data sparsity, but also allows the system to operate on unseen classes without the need for retraining.
+The work introduces an embedding-based architecture, developed using a linear projection head that enables a standard CNN to extract metric features. This structure allows for an in-depth comparative analysis of losses, evaluating how Triplet and Contrastive Loss (in the Euclidean and Cosine variants) influence the topology of the latent space.
 To support training, a dynamic transfer learning management system based on progressive layer unlocking is implemented, ensuring an optimal balance between model stability and learning speed, while also allowing for deeper specialization of the extracted features. The work concludes with an Open-Set Evaluation conducted on brands never encountered during the training phase, using retrieval metrics such as mAP to validate the system's actual generalization capability.
 
 
@@ -137,13 +135,7 @@ The original images have heterogeneous resolutions. In the loading module, the d
 This section describes the system architecture and the optimization methodologies adopted to transform the logo recognition problem into a Deep Metric Learning task.
 
 \subsection{Model Architecture: LogoResNet50}
-The implemented architecture is based on a ResNet-50 backbone, chosen for its optimal balance between computational depth and feature extraction capability. The original model, pre-trained on ImageNet, has been modified to adapt to the metric learning paradigm through two structural interventions:
-
-\begin{itemize}
-    \item \textbf{Embedding Head Evolution}: Different configurations for latent space projection were tested, varying the size of the embeddings (128 and 256) and the module complexity. In addition to the single Linear layer, a more robust architecture was evaluated consisting of a first high-dimensional FC layer, followed by \textbf{1D Batch Normalization} and \textbf{Dropout}, and ending with a second FC layer for the final embedding. This structure is designed to regularize learning and improve class separation.
-    \item \textbf{Spatial Normalization}: To ensure the effectiveness of the loss functions, the embeddings are normalized using the Euclidean norm. This step prevents the model from minimizing the loss by artificially increasing the magnitude (scale) of the vectors to distance them. Normalization forces the network to optimize the \textbf{semantic direction} of the logos, ensuring that spatial proximity reflects a true morphological similarity and not simply a scale artifact.
-\end{itemize}
-
+The implemented architecture is based on a \textbf{ResNet-50 backbone}, chosen for its optimal balance between computational depth and feature extraction capability. The original model, pre-trained on ImageNet, has been modified to adapt to the \textbf{metric learning paradigm} through a custom \textbf{Embedding Head}. This module consists of a high-dimensional FC layer, followed by \textbf{1D Batch Normalization} and \textbf{Dropout}, ending with a second FC layer for the final latent projection. To ensure the effectiveness of the loss functions, the embeddings undergo \textbf{Spatial Normalization} using the Euclidean norm. This step forces the network to optimize the \textbf{semantic direction} of the logos, ensuring that spatial proximity reflects true \textbf{morphological similarity} rather than scale artifacts.
 
 \subsection{Loss Functions}
 To optimize the topology of the embedding space, three different training objectives were implemented and compared:
@@ -161,8 +153,8 @@ Training is managed by a dynamic configuration system (Config) that allows for r
 \begin{itemize}
 
     \item \textbf{Progressive Freezing}: To preserve pre-learned knowledge about ImageNet, the model starts training with frozen backbone convolutional blocks (freeze\_layers).
-   \item \textbf{Dynamic Unfreezing}: Upon reaching a predetermined epoch (unfreeze\_at\_epoch = 5), the code unfreezes layers, allowing for fine-tuning of logo-specific spatial features. To handle the sudden increase in trainable parameters, a learning rate reduction was implemented, allowing for more stable and precise fine-tuning of spatial features.
-   \item \textbf{Optimization}: Both \textbf{SGD} and \textbf{Adam} were evaluated, adopting a differentiated learning rate strategy for both, where the learning rate for the backbone parameters is reduced by a factor of 1 compared to that for the head parameters. This allows us to refine the specific morphological knowledge of the logos without compromising the patterns pre-trained on ImageNet.
+   \item \textbf{Dynamic Unfreezing}: Upon reaching a predetermined epoch we tested unfreezeing some layers, allowing for fine-tuning of logo-specific spatial features. To handle the sudden increase in trainable parameters we experimented with a learning rate reduction, allowing for more stable and precise fine-tuning.
+   \item \textbf{Optimization}: Both \textbf{SGD} and \textbf{Adam} were evaluated, adopting in later runs a differentiated learning rate strategy for both, where the learning rate for the backbone parameters is reduced by a config factor compared to that for the head parameters. This allows us to refine the specific morphological knowledge of the logos without compromising the patterns pre-trained on ImageNet.
 
 \end{itemize}
 
@@ -197,7 +189,7 @@ The experimental analysis consisted of a series of tests aimed at identifying th
         \hline
         Weight Decay & 0 & $1.0 \times 10^{-4}$ \\
         \hline
-        Backbone LR Factor & 0.03 & 0.5 \\
+        Backbone LR Reduction Factor & 0.03 & 0.5 \\
         \hline
         Embedding Output Dim. & 128 & 256 \\
         \hline
@@ -210,7 +202,7 @@ For training and evaluating the system, a pipeline has been defined that separat
 
 \begin{itemize}
     \item \textbf{Training (Deep Metric Learning)}: All experiments were conducted using a ResNet-50 pre-trained on ImageNet and adapted to the metric learning paradigm via an embedding head.
-Training was performed using a progressive unfreezing strategy: the backbone was initially frozen to stabilize the projection in latent space, then progressively unfreezed to adapt the features to the morphology of the logos.
+Training was performed using a progressive unfreezing strategy.
     \item \textbf{Testing (Few-Shot Evaluation)}: Testing is not based on simple class accuracy, but rather on episodic evaluation (N-way K-shot).
 The system is tested on brands never seen in the training set. For each episode, a few example images (support set) are provided, along with a query to be classified using cosine similarity in the latent space. This ensures that the model is effectively "measuring similarity" and not memorizing labels.
 \end{itemize}
@@ -234,7 +226,7 @@ The evolution of testing on \textbf{Triplet Margin Loss} provided critical insig
     \item \textbf{Threshold Stability:} Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around \textbf{1.18}. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
 \end{itemize}
 
-\begin{figure}[t] % Usa [t] per posizionare in alto (meglio di [H] per CVPR)
+\begin{figure}[H] % Usa [t] per posizionare in alto (meglio di [H] per CVPR)
     \centering
     
     % --- PARTE IMMAGINE ---
@@ -419,7 +411,7 @@ The experimental analysis of the variant based on \textbf{Cosine Similarity} rev
 
 \textbf{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs:
 \begin{itemize}
-    \item \textbf{Optimizer Stability:} Initial tests on a 10,000-sample subset compared the stability of SGD and Adam. While the \textbf{SGD baseline} showed a consistent upward trend in F1-score \ref{fig:431}, the Adam optimizer introduced significant volatility in the distance threshold \ref{fig:432}. This reinforced that momentum-based SGD is more effective at maintaining a rigid geometric margin for this task.
+    \item \textbf{Optimizer Selection:} Initial testing on a 10,000-sample subset identified SGD as the more stable choice for this architecture. While Adam introduced significant volatility in the distance threshold during early trials, the SGD baseline (Figure \ref{fig:431}) demonstrates a consistent, stable upward trend in F1-score and a more stable distance threshold. This stability suggests that momentum-based SGD is better suited for maintaining the rigid geometric margin required for this metric learning task.
     \item \textbf{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
     \item \textbf{Full-Scale Optimization:} The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
 \end{itemize}
@@ -471,12 +463,13 @@ The experimental analysis of the variant based on \textbf{Cosine Similarity} rev
 \end{table}
 
 
-\begin{figure}[H]
-    \centering
-    \includegraphics[width=\myimgwidth]{imm/img432.pdf}
-    \caption{todo}
-    \label{fig:432}
-\end{figure}
+% \begin{figure}[H]
+%     \centering
+%     \includegraphics[width=\myimgwidth]{imm/img432.pdf}
+%     \caption{todo}
+%     \label{fig:432}
+% \end{figure}
+
 %\begin{table}[H]
 %    \centering
 %    \renewcommand{\arraystretch}{1.2}
