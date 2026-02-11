@@ -1,13 +1,13 @@
 # Fdb version 4
-["bibtex egpaper_final"] 1770848486.23152 "egpaper_final.aux" "egpaper_final.bbl" "egpaper_final" 1770850970.03086 0
+["bibtex egpaper_final"] 1770848486.23152 "egpaper_final.aux" "egpaper_final.bbl" "egpaper_final" 1770851791.8554 0
   "./egbib.bib" 1770553064 1245 86e42f32e08dfe17ea2ac5ff514ddcca ""
   "./ieee_fullname.bst" 1770553064 21040 72b73f4cb1c51eaa1a7af8ecad2b6bfb ""
-  "egpaper_final.aux" 1770850969 7394 d75dd71bf454186aed87c47f0def8889 "pdflatex"
+  "egpaper_final.aux" 1770851791 7394 d75dd71bf454186aed87c47f0def8889 "pdflatex"
   (generated)
   "egpaper_final.bbl"
   "egpaper_final.blg"
   (rewritten before read)
-["pdflatex"] 1770850968.78221 "c:/Users/ogger/GitRepos/Few-Shot_Logo_Recognition/delivery/Progetto_latex_paper/egpaper_final.tex" "egpaper_final.pdf" "egpaper_final" 1770850970.03123 0
+["pdflatex"] 1770851790.5384 "c:/Users/ogger/GitRepos/Few-Shot_Logo_Recognition/delivery/Progetto_latex_paper/egpaper_final.tex" "egpaper_final.pdf" "egpaper_final" 1770851791.85581 0
   "C:/Users/ogger/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map" 1770842458 82507 a9eef8696c92627b87e9975edea03b2a ""
   "C:/Users/ogger/AppData/Local/MiKTeX/miktex/data/le/pdftex/pdflatex.fmt" 1770736437 13333862 4ca4c4200af721402dd5edcb318c097e ""
   "C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc" 1458473887 4993 80dc9bab7f31fb78a000ccfed0e27cab ""
@@ -120,12 +120,12 @@
   "C:/Users/ogger/AppData/Local/Programs/MiKTeX/tex/latex/tools/tabularx.sty" 1761901070 7243 a2c17f18e2c9b702b84fad03d5f9c78b ""
   "C:/Users/ogger/AppData/Local/Programs/MiKTeX/tex/latex/tools/xspace.sty" 1761901070 4545 d7bb86d489a8ad5263e4c34304c03aee ""
   "C:/Users/ogger/AppData/Local/Programs/MiKTeX/tex/latex/url/url.sty" 1388490452 12796 8edb7d69a20b857904dd0ea757c14ec9 ""
-  "c:/Users/ogger/GitRepos/Few-Shot_Logo_Recognition/delivery/Progetto_latex_paper/egpaper_final.tex" 1770850968 42741 4d38a56b3b6e16b6bdd5a21465b72f5b ""
+  "c:/Users/ogger/GitRepos/Few-Shot_Logo_Recognition/delivery/Progetto_latex_paper/egpaper_final.tex" 1770851790 41909 221272da175458c07c47d8d56274b0fc ""
   "cvpr.sty" 1770553064 8434 9c85e63bb1830fdefeac27370f229c9e ""
   "cvpr_eso.sty" 1770553064 3987 6aa7c08ff2621006e0603349e40a30a8 ""
-  "egpaper_final.aux" 1770850969 7394 d75dd71bf454186aed87c47f0def8889 "pdflatex"
+  "egpaper_final.aux" 1770851791 7394 d75dd71bf454186aed87c47f0def8889 "pdflatex"
   "egpaper_final.bbl" 1770848486 377 9f90875a663af80b50d0bb6470c7f387 "bibtex egpaper_final"
-  "egpaper_final.tex" 1770850968 42741 4d38a56b3b6e16b6bdd5a21465b72f5b ""
+  "egpaper_final.tex" 1770851790 41909 221272da175458c07c47d8d56274b0fc ""
   "eso-pic.sty" 1770553064 9727 d2935ae95b5cd343fcf5887ff530288d ""
   "imm/1immintro.pdf" 1770835043 48017 6b26b07856c736421be60cce1179a36d ""
   "imm/img41.pdf" 1770842454 134347 5bcfef66d37b6533a67760ae8e140c81 ""
