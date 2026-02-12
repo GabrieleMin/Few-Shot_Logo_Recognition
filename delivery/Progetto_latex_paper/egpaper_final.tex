@@ -166,7 +166,7 @@ The main metrics calculated in the validation loop are:
    \item \textbf{Mean Average Precision (mAP)}: Used to measure retrieval quality, i.e., how effectively the model ranks correct logos at the top of search results.
    \item \textbf{Precision and Recall}: Calculated to analyze the model's behavior with respect to false positives and false negatives. Precision indicates how reliable the positive predictions (logo matches) are, while recall measures the system's ability to retrieve all correct instances.
    \item \textbf{Recall at fixed Precision (R@95P)}: It measures the percentage of correct matches recovered when the system detects a high accuracy (95\%), that is, when you want to minimize false positives.
-
+    \item \textbf{discriminant ratio (J)}: It is calculated as the ratio between the average distance of negative pairs and the average distance of positive pairs. A higher J indicates a better separation between classes in the embedding space, which is crucial for effective retrieval.
 \end{itemize}
 
 
