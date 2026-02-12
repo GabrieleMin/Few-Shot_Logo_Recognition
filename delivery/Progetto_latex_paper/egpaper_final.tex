@@ -335,18 +335,25 @@ The \emph{distance threshold} successfully stabilized at approximately \emph{0.6
     \label{fig:431}
 \end{figure}
 
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=\myimgwidth]{imm/img433.pdf}
+    \caption{Optimal Model Results}
+    \label{fig:433}
+\end{figure}
+
 \begin{table}[t]
     \centering
     \renewcommand{\arraystretch}{1.2}
-    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:431}.}
-    \label{tab:config_img431}
+    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:433}.}
+    \label{tab:config_433}
     \begin{tabularx}{\linewidth}{|l|X|}
         \hline
         \textbf{hyperparameter} & \textbf{Value} \\
         \hline
-        Dataset Size & 10000 \\
+        Dataset Size & Full \\
         \hline
-        Batch Size & 64 \\
+        Batch Size & 256 \\
         \hline
         Optimizer & SGD \\
         \hline
@@ -356,25 +363,20 @@ The \emph{distance threshold} successfully stabilized at approximately \emph{0.6
         \hline
         Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
         \hline
-        Backbone LR & Factor $0.5$ (rispetto al LR Head) \\
+        Backbone LR & Factor $0.25$ \\
         \hline
         Output Norm. & True \\
         \hline
         Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
         \hline
-        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 5) \\
+        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 15) \\
         \hline
         Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
         \hline
     \end{tabularx}
 \end{table}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\myimgwidth]{imm/img433.pdf}
-    \caption{Optimal Model Results}
-    \label{fig:433}
-\end{figure}
+
 %this last experimental setup \ref{fig:433} utilized the full dataset with a batch size of 256, employing an SGD optimizer with zero weight decay and a margin of 0.2.
 %A constant learning rate of $1.0 \times 10^{-2}$ was maintained, while the backbone learning rate was scaled by a factor of 0.25. The architecture featured an MLP embedding head ($2048 \rightarrow 1024 \rightarrow \text{ReLU} \rightarrow 256$) with output normalization enabled. Additionally, the training process involved a freeze strategy that unlocked specific layers at epoch 15, alongside a robust data augmentation pipeline that included resizing to $224 \times 224$, random perspective, horizontal flipping, rotation, grayscale adjustments, color jitter, and normalization.
 
@@ -443,16 +445,26 @@ Finally, the \emph{discriminant ratio (J)} increases dramatically from 0.3898 in
 \subsection{Qualitative Analysis of Retrieval Behavior}
 
 The Contrastive Loss-based architecture proves to be the most effective of the project, achieving a mAP of \textbf{65.2\%}, demonstrating an abstraction capability that goes beyond simple pixel-matching. 
-Cases like \emph{Maille} highlight how the network extracts invariant features, correctly associating logos on complex backgrounds (e.g., cans on a black background). 
-However, the addition of massive graphic elements, as in the case of \emph{Captain Morgan}, can push the embedding beyond the tolerance threshold, masking the brand's identity and leading to false negatives.
+Cases like \emph{Maille}\ref{fig:5} highlight how the network extracts invariant features, correctly associating logos on complex backgrounds (e.g., cans on a black background). 
+However, the addition of massive graphic elements, as in the case of \emph{Captain Morgan}\ref{fig:6}, can push the embedding beyond the tolerance threshold, masking the brand's identity and leading to false negatives.
 
-\begin{figure}[h]
+%---------------------------------------------------------------------------------------------------
+%Maille
+\begin{figure}[t]
     \centering
-    \includegraphics[width=\myimgwidth]{imm/img5.pdf}
-    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative).}
+    \includegraphics[width=1\linewidth]{imm/img5.pdf}
+    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative) With a complex background.}
     \label{fig:5}
 \end{figure}
+%Captain Morgan
+\begin{figure}[t]
+    \centering
+    \includegraphics[width=1\linewidth]{imm/img6.pdf}
+    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative) with massive graphic elements.}
+    \label{fig:6}
+\end{figure}
 
+%---------------------------------------------------------------------------------------------------
 
 \subsection{Qualitative Embedding Analysis}
 
