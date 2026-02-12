@@ -319,11 +319,11 @@ The evolution of testing on \textbf{Triplet Margin Loss} provided critical insig
 
 \subsection{Contrastive Loss Analysis (Cosine)}
 
-The experimental analysis of the variant based on \textbf{Cosine Similarity} reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
+While the Euclidean-distance alternative showed less promising convergence and couldn’t be explored further due to time and Colab compute limits, experiments with the Cosine Similarity variant reveal a distinct learning dynamic, emphasizing refinement of the angular margin between embeddings.
 
 \textbf{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs:
 \begin{itemize}
-    \item \textbf{Optimizer Selection:} Initial testing on a 10,000-sample subset identified SGD as the more stable choice for this architecture. While Adam introduced significant volatility in the distance threshold during early trials, the SGD baseline (Figure \ref{fig:431}) demonstrates a consistent, stable upward trend in F1-score and a more stable distance threshold. This stability suggests that momentum-based SGD is better suited for maintaining the rigid geometric margin required for this metric learning task.
+    \item \textbf{Optimizer Selection:} Initial tests on a 10,000 sample subset identified SGD as the more stable choice. Adam caused volatility in the distance threshold during early trials, whereas SGD (Figure \ref{fig:431}) shows a steady F1-score increase and a consistent distance threshold, suggesting momentum-based SGD better preserves the rigid geometric margin needed for this metric learning task.
     \item \textbf{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
     \item \textbf{Full-Scale Optimization:} The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
 \end{itemize}
