@@ -89,6 +89,13 @@ To support training, a dynamic transfer learning management system based on prog
 
 \section{Data}
 For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which currently represents one of the largest and most complex benchmarks for logo recognition. This work is based on the use of the LogoDet-3K dataset, publicly accessible via the repository: \url{ https://github.com/Wangjing1551/LogoDet-3K-Dataset}.
+%LogoDet-3K was chosen for three key strategic reasons. First, its scale and diversity, featuring 3,000 brands compared to the few dozen found in classic datasets,
+%prevent the model from overfitting to a small closed set.
+%Furthermore, the long-tailed distribution of the data perfectly simulates real-world scenarios, making it the ideal candidate for validating Few-Shot
+%Learning strategies designed to handle data sparsity. Finally, the contextual complexity of the "in-the-wild" images,
+%characterized by cluttered backgrounds, occlusions, and varying lighting, compels the metric learning model to learn robust and invariant features,
+%rather than relying on the simple texture matching typical of clean, cropped icons.
+LogoDet-3K was selected for three reasons: its scale prevents overfitting compared to smaller datasets; its long-tailed distribution effectively validates Few-Shot Learning in sparse, real-world scenarios; and its complex "in-the-wild" imagery forces the model to learn robust, invariant features rather than simple texture matching.
 
 \subsection{Dataset Description}
 LogoDet-3K comprises 3,000 logo categories, with approximately 200,000 manually
