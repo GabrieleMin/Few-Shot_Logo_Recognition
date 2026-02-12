@@ -1,4 +1,4 @@
-\newcommand{\myimgwidth}{0.645\linewidth}
+\newcommand{\myimgwidth}{0.6\linewidth}
 \documentclass[10pt,twocolumn,letterpaper]{article}
 
 \usepackage{cvpr}
@@ -161,7 +161,7 @@ The main metrics calculated in the validation loop are:
 The experimental analysis consisted of a series of tests aimed at identifying the optimal combination of hyperparameters, following different transfer learning strategies.
 For clarity, the ranges of the hyperparameters used are shown in \ref{tab:hyper_ranges}.
 
-\begin{table}[t]
+\begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.1}
     \caption{Range of hyperparameters (Minimum - Maximum) observed across all experimental configurations.}
@@ -197,82 +197,94 @@ The system is tested on brands never seen in the training set. For each episode,
 The training phase followed an iterative optimization strategy to achieve the best hyper parameters configuration. The model was evaluated based on its ability to minimize the Triplet Loss while maximizing the Validation F1 Score at an optimal distance threshold.
 
 
-\subsection{Triplet Loss Analysis}
 
-The evolution of testing on Triplet Margin Loss provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.
-\textbf{Analysis of Model Iterations and Improvements.} 
-Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training.
-Initially, regarding \textbf{Data Augmentation}, to mitigate early overfitting (Figure \ref{fig:41}), a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn \textbf{affine-invariant features} (Figure \ref{fig:42}).
-\begin{figure}[t]
+\subsection{Triplet Loss Analysis}
+The evolution of testing on \textbf{Triplet Margin Loss} provided critical insights into the impact of gradient stability and geometric constraints on the embedding space quality.\vspace{1em}
+
+\textbf{Analysis of Model Iterations and Improvements:} Preliminary experiments conducted on a 10,000-image subset revealed several technical challenges that shaped the final training:
+\begin{itemize}
+    \item \textbf{Data Augmentation:} To mitigate early overfitting (Figure \ref{fig:41}), a pipeline including perspective shifts, rotations, and color jitter was implemented. This forced the ResNet-50 backbone to move beyond simple pixel matching and learn \textbf{affine-invariant features} (Figure \ref{fig:42}).
+    \item \textbf{Optimization and Unfreezing:} Transitioning from Adam to \textbf{SGD} yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" (Figure \ref{fig:43}). This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
+    \item \textbf{L2 Normalization and the "Scaling Problem":} Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from (Figure \ref{fig:41}) to (Figure \ref{fig:43}). Introducing \textbf{L2 normalization} and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:44}):} The final configuration demonstrated the robustness required for Open-Set scenarios:
+\begin{itemize}
+    \item \textbf{Loss and F1-Score Curves:} Constant convergence was observed, with Validation Loss stabilizing around 0.45. The \textbf{F1-score reached a peak of 0.775}; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
+    \item \textbf{Threshold Stability:} Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around \textbf{1.18}. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
+\end{itemize}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=\myimgwidth]{imm/img41.pdf}
-    \caption{Early overfitting trend observed during preliminary experiments without augmentation.}
+    \caption{Early overfitting trend observed during preliminary experiments without augmentation.
+    Training setup: dataset size 10k samples, batch size 32, Adam optimizer (lr $=10^{-3}$),
+    margin $=1.0$, embedding MLP $2048 \rightarrow 128$.}
     \label{fig:41}
 \end{figure}
 
-\begin{table}[t] % Prova [b!] per metterla a fondo colonna, o [t!] per alto
-    \centering
-    \small % Font leggermente ridotto
-    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:41}.}
-    \label{tab:config_1}
+% \begin{table}[t] % Prova [b!] per metterla a fondo colonna, o [t!] per alto
+%     \centering
+%     \small % Font leggermente ridotto
+%     \caption{Configuration hyperparameters related to the results in Figure \ref{fig:41}.}
+%     \label{tab:config_1}
     
-    % Regola lo spazio tra le righe per compattare
-    \renewcommand{\arraystretch}{1.1} 
+%     % Regola lo spazio tra le righe per compattare
+%     \renewcommand{\arraystretch}{1.1} 
     
-    % Se hai il pacchetto booktabs usa \toprule, \midrule, \bottomrule
-    % Altrimenti cambia con \hline
-    \begin{tabularx}{\linewidth}{|l|X|} % 'l' per la prima colonna, 'X' per la seconda
-        \hline % \toprule
-        \textbf{Hyperparameter} & \textbf{Value} \\
-        \hline % \midrule
-        Dataset Size & 10,000 \\
-        \hline
-        Batch Size & 32 \\
-        \hline
-        Optimizer & Adam \\
-        \hline
-        Weight Decay & None \\
-        \hline
-        Margin & 1.0 \\
-        \hline
-        Learning Rate & 0.001 \\
-        \hline
-        Backbone LR Red. & None \\
-        \hline
-        Output Norm. & No \\
-        \hline
-        Embedding Layer & MLP ($2048 \to 128$) \\
-        \hline
-        Freeze Strat. & None \\
-        \hline
-        Data Aug. & None \\
-        \hline % \bottomrule
-    \end{tabularx}
-\end{table}
+%     % Se hai il pacchetto booktabs usa \toprule, \midrule, \bottomrule
+%     % Altrimenti cambia con \hline
+%     \begin{tabularx}{\linewidth}{|l|X|} % 'l' per la prima colonna, 'X' per la seconda
+%         \hline % \toprule
+%         \textbf{Hyperparameter} & \textbf{Value} \\
+%         \hline % \midrule
+%         Dataset Size & 10,000 \\
+%         \hline
+%         Batch Size & 32 \\
+%         \hline
+%         Optimizer & Adam \\
+%         \hline
+%         Weight Decay & None \\
+%         \hline
+%         Margin & 1.0 \\
+%         \hline
+%         Learning Rate & 0.001 \\
+%         \hline
+%         Backbone LR Red. & None \\
+%         \hline
+%         Output Norm. & No \\
+%         \hline
+%         Embedding Layer & MLP ($2048 \to 128$) \\
+%         \hline
+%         Freeze Strat. & None \\
+%         \hline
+%         Data Aug. & None \\
+%         \hline % \bottomrule
+%     \end{tabularx}
+% \end{table}
 
-\begin{figure}[t]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\myimgwidth]{imm/img42.pdf}
     \caption{shifts, rotations, and color jitter implementation}
     \label{fig:42}
 \end{figure}
 
-Subsequently, focusing on \textbf{Optimization and Unfreezing} transitioning from Adam to \textbf{SGD} yielded more stable convergence. Furthermore, "multi-stage unfreezing" tests showed that aggressive backbone releases, where different parts of the backbone were unfrozen at different epochs, induced gradient "shocks" (Figure \ref{fig:43}). This led to the adoption of a more conservative approach with a single unfreezing only of the later stage of the ResNet backbone.
-
-Finally, to address \textbf{L2 Normalization and the "Scaling Problem":} Initial runs without L2 normalization revealed a fundamental vulnerability: the model minimized loss by globally expanding distances (a trivial scaling strategy). This caused a persistent upward trajectory in the distance threshold as it can be seen in Figures from (Figure \ref{fig:41}) to (Figure \ref{fig:43}). Introducing \textbf{L2 normalization} and a hidden linear layer forced the model to map logos onto a unit hypersphere, favouring threshold convergence and ensuring a more robust latent space.
-
-\textbf{Optimal Model Results (Figure \ref{fig:44})}, demonstrated the robustness required for Open-Set scenarios.
-Specifically, the \textbf{Loss and F1-Score Curves:} Constant convergence was observed, with Validation Loss stabilizing around 0.45. The \textbf{F1-score reached a peak of 0.775}; the sharp improvement at epoch 15 validates the progressive unfreezing protocol combined with a learning rate reduction (factor 0.2).
-Moreover, regarding \textbf{Threshold Stability:} Unlike "unconstrained" models, the optimal distance threshold converged asymptotically toward around \textbf{1.18}. This stability confirms that the model transitioned from a scaling strategy to a structured latent space with reliable boundaries, essential for identifying unseen categories.
-
-\begin{figure}[t]
+\begin{figure}[H]
    \centering
    \includegraphics[width=\myimgwidth]{imm/img43.pdf}
    \caption{backbone unfreezing "shock"}
    \label{fig:43}
 \end{figure}
 
-\begin{table}[t]
+\begin{figure}[H]
+    \centering
+    \includegraphics[width=\myimgwidth]{imm/img44.pdf}
+    \caption{Optimal Model Results}
+    \label{fig:44}
+\end{figure}
+%Tabella dell'immagine numero 4.4 (commentata per evitare problemi di spazio e posizionamento in CVPR)
+
+\begin{table}[H]
     \centering
     \renewcommand{\arraystretch}{1.2}
     \caption{Configuration hyperparameters related to the results in Figure \ref{fig:44}.}
@@ -304,87 +316,112 @@ Moreover, regarding \textbf{Threshold Stability:} Unlike "unconstrained" models,
     \end{tabularx}
 \end{table}
 
-\begin{figure}[t]
-    \centering
-    \includegraphics[width=\myimgwidth]{imm/img44.pdf}
-    \caption{Optimal Model Results}
-    \label{fig:44}
-\end{figure}
-%Tabella dell'immagine numero 4.4 (commentata per evitare problemi di spazio e posizionamento in CVPR)
-
-
 
 \subsection{Contrastive Loss Analysis (Cosine)}
 
-The experimental analysis of the variant based on \emph{Cosine Similarity} reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
-\emph{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs.
-Initially, regarding \emph{Optimizer Selection} testing on a 10,000-sample subset identified SGD as the more stable choice for this architecture. While Adam introduced significant volatility in the distance threshold during early trials, the SGD baseline (Figure \ref{fig:431}) demonstrates a consistent, stable upward trend in F1-score and a more stable distance threshold. This stability suggests that momentum-based SGD is better suited for maintaining the rigid geometric margin required for this metric learning task.
-Furthermore, concerning \emph{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
-Finally, the \emph{Full-Scale Optimization} on the complete dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
+The experimental analysis of the variant based on \textbf{Cosine Similarity} reveals a distinct learning dynamic compared to the triplet-based approach, focusing on the refinement of the angular margin between embeddings.
 
-\emph{Optimal Model Results (Figure \ref{fig:433}):} The combination of \emph{Contrastive Loss} and the previously optimized hyperparameters successfully established a reliable global metric.
-\emph{F1-Score and Convergence:}
-As visible in the graphs for the optima model, the \emph{validation F1-score peaked at 0.811}, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy.
-\emph{Threshold Stability:}
-The \emph{distance threshold} successfully stabilized at approximately \emph{0.60}. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+\textbf{Analysis of Model Iterations and Improvements:} The tuning of the hyper parameters for the contrastive loss was done taking into account the results obtained from the triplet runs:
+\begin{itemize}
+    \item \textbf{Optimizer Selection:} Initial testing on a 10,000-sample subset identified SGD as the more stable choice for this architecture. While Adam introduced significant volatility in the distance threshold during early trials, the SGD baseline (Figure \ref{fig:431}) demonstrates a consistent, stable upward trend in F1-score and a more stable distance threshold. This stability suggests that momentum-based SGD is better suited for maintaining the rigid geometric margin required for this metric learning task.
+    \item \textbf{Architectural Refinements:} Utilizing the refinements developed during the Triplet Loss phase, specifically the inclusion of a hidden linear layer and \textbf{L2 normalization}, the contrastive runs focused on optimizing the relationship between positive and negative pairs. The L2 normalization is particularly critical here, as Cosine Similarity inherently operates on the unit hypersphere, ensuring that the model optimizes the angle between vectors rather than their magnitude.
+    \item \textbf{Full-Scale Optimization:} The final scale-up to the full dataset utilized a batch size of 256 to better fit the Colab environment and a 0.25 backbone learning rate factor. Releasing part of the backbone weights after a certain epoch allowed the embedding head to stabilize before the final fine-tuning phase.
+\end{itemize}
+\textbf{Optimal Model Results (Figure \ref{fig:433}):} The combination of \textbf{Contrastive Loss} and the previously optimized hyperparameters successfully established a reliable global metric:
+\begin{itemize}
+    \item \textbf{F1-Score and Convergence:} As visible in the graphs for the optima model, the \textbf{validation F1-score peaked at 0.811}, outperforming the triplet-based baseline. This suggests that the Contrastive approach provides a more efficient learning for the model under the selected hyperparameter configuration. By directly optimizing the similarity between pairs, the model achieved better convergence compared to the triplet-based strategy.
+    \item \textbf{Threshold Stability:} The \textbf{distance threshold} successfully stabilized at approximately \textbf{0.60}. This steady convergence proves that the model achieved a structured latent space where the "intra-class" similarity and "inter-class" distance are well-defined.
+\end{itemize}
 
-\begin{figure}[t]
+\begin{figure}[H]
     \centering
     \includegraphics[width=\myimgwidth]{imm/img431.pdf}
     \caption{SGD baseline}
     \label{fig:431}
 \end{figure}
 
-\begin{figure}[t]
+% \begin{table}[H]
+%     \centering
+%     \renewcommand{\arraystretch}{1.2}
+%     \caption{Configuration hyperparameters related to the results in Figure \ref{fig:431}.}
+%     \label{tab:config_img431}
+%     \begin{tabularx}{\linewidth}{|l|X|}
+%         \hline
+%         \textbf{hyperparameter} & \textbf{Value} \\
+%         \hline
+%         Dataset Size & 10000 \\
+%         \hline
+%         Batch Size & 64 \\
+%         \hline
+%         Optimizer & SGD \\
+%         \hline
+%         Weight Decay & 0 \\
+%         \hline
+%         Margin & 0.2 \\
+%         \hline
+%         Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
+%         \hline
+%         Backbone LR & Factor $0.5$ (rispetto al LR Head) \\
+%         \hline
+%         Output Norm. & True \\
+%         \hline
+%         Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
+%         \hline
+%         Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 5) \\
+%         \hline
+%         Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+%         \hline
+%     \end{tabularx}
+% \end{table}
+
+\begin{figure}[H]
     \centering
     \includegraphics[width=\myimgwidth]{imm/img433.pdf}
     \caption{Optimal Model Results}
     \label{fig:433}
 \end{figure}
-
-\begin{table}[t]
-    \centering
-    \renewcommand{\arraystretch}{1.2}
-    \caption{Configuration hyperparameters related to the results in Figure \ref{fig:433}.}
-    \label{tab:config_433}
-    \begin{tabularx}{\linewidth}{|l|X|}
-        \hline
-        \textbf{hyperparameter} & \textbf{Value} \\
-        \hline
-        Dataset Size & Full \\
-        \hline
-        Batch Size & 256 \\
-        \hline
-        Optimizer & SGD \\
-        \hline
-        Weight Decay & 0 \\
-        \hline
-        Margin & 0.2 \\
-        \hline
-        Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
-        \hline
-        Backbone LR & Factor $0.25$ \\
-        \hline
-        Output Norm. & True \\
-        \hline
-        Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
-        \hline
-        Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 15) \\
-        \hline
-        Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
-        \hline
-    \end{tabularx}
-\end{table}
-
-
 %this last experimental setup \ref{fig:433} utilized the full dataset with a batch size of 256, employing an SGD optimizer with zero weight decay and a margin of 0.2.
 %A constant learning rate of $1.0 \times 10^{-2}$ was maintained, while the backbone learning rate was scaled by a factor of 0.25. The architecture featured an MLP embedding head ($2048 \rightarrow 1024 \rightarrow \text{ReLU} \rightarrow 256$) with output normalization enabled. Additionally, the training process involved a freeze strategy that unlocked specific layers at epoch 15, alongside a robust data augmentation pipeline that included resizing to $224 \times 224$, random perspective, horizontal flipping, rotation, grayscale adjustments, color jitter, and normalization.
+
+\begin{table}[H]
+   \centering
+   \renewcommand{\arraystretch}{1.2}
+   \caption{Configuration hyperparameters related to the results in Figure \ref{fig:433}.}
+   \label{tab:config_433}
+   \begin{tabularx}{\linewidth}{|l|X|}
+       \hline
+       \textbf{hyperparameter} & \textbf{Value} \\
+       \hline
+       Dataset Size & Full \\
+       \hline
+       Batch Size & 256 \\
+       \hline
+       Optimizer & SGD \\
+       \hline
+       Weight Decay & 0 \\
+       \hline
+       Margin & 0.2 \\
+       \hline
+       Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
+       \hline
+       Backbone LR & Factor $0.25$ \\
+       \hline
+       Output Norm. & True \\
+       \hline
+       Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
+       \hline
+       Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 15) \\
+       \hline
+       Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
+       \hline
+   \end{tabularx}
+\end{table}
 
 \subsection{Comparison between Baseline and Proposed Models}
 
 The following table presents the results obtained comparing the proposed models with the baseline across different support set sizes ($n$). 
 
-\begin{table}[t]
+\begin{table}[H]
 \begin{center}
 
 
@@ -430,37 +467,52 @@ J         & 1.9311 & 1.9868 & 0.3898 \\
 \label{tab:final_results}
 \end{table}
 
-\emph{Comparison with Baseline:} While the ResNet-50 baseline achieves high Accuracy, it struggles with retrieval-specific metrics. Our proposed models demonstrate a substantial leap in \emph{Recall}, \emph{mAP} and the \emph{discriminant ratio (J)} indicating that the Metric Learning approach is more effective at clustering similar logos than standard classification. The most striking difference is the \emph{discriminant ratio (J)}, which rises from $0.3898$ in the baseline to nearly $2.0$, reflecting a more optimized and expansive latent space.
-\emph{Few-Shot Support ($n=5$):} All models exhibit a performance gain as $n$ increases. By averaging the embeddings of five support samples, the system creates a stable brand prototype, filtering out "contextual noise" (unrelated background elements). This is most visible in the Contrastive model's Recall, which jumps from $0.4732$ to $0.6441$.
-\emph{Comparison between Models Performance:} The Contrastive Cosine approach yields superior results compared to the Triplet model. This disparity is likely because the Triplet task is inherently more difficult to optimize; without the implementation of hard negative mining to select challenging samples, the Triplet loss struggles to refine decision boundaries as effectively as the Contrastive loss.
-\emph{Threshold Optimization and Class Imbalance:} 
-The optimal similarity thresholds ($\tau$) were determined by maximizing the F1-score across a range of distance candidates. A notable discrepancy exists between the thresholds identified during validation ($\tau \approx 1.175$ for Triplet; $\tau \approx 0.59$ for Contrastive) and those utilized in the final evaluation ($\tau \approx 0.50$--$0.56$). This shift is primarily driven by the transition from a balanced validation environment to a retrieval-based testing scenario. While validation optimizes for a 1:1 positive-to-negative ratio, the testing phase reflects a realistic distribution where negative distractors vastly outnumber positive matches. In this imbalanced setting, maintaining a high F1-score requires a more stringent threshold to prevent the massive pool of negatives from generating enough False Positives to overwhelm the metric.\vspace{1em}
-\textbf{Analysis of Metric Variations and Model Impact:}
-Regarding \emph{Classification Metrics (Accuracy, Precision, Recall, F1-Score)}, The Baseline achieves the highest Accuracy, particularly at $n=5$, while both metric-learning models show a slight decrease, indicating a small trade-off in overall classification correctness. While the precision is not significantly impacted, the most significant improvement is observed in Recall, which increases substantially in both Triplet and Contrastive models, with the latter reaching 0.6441 at $n=5$ compared to 0.3493 for the Baseline, as a result, the F1-Score improves consistently. Overall, these variations indicate that metric learning enhances retrieval effectiveness despite a marginal reduction in Accuracy.
-Concerning \emph{R@95p} the Contrastive model improves R@95p at $n=1$ and remains very close to the Baseline at $n=5$, while the Triplet model shows slightly lower values. This suggests that the Contrastive loss better preserves high-confidence retrieval performance, maintaining strong recall under strict precision constraints.
-Furthermore,\emph{mAP} improves noticeably with metric learning, particularly for the Contrastive model, which achieves the best overall performance at both $n=1$ and $n=5$. Since mAP reflects ranking quality across thresholds, this confirms that the learned embeddings produce a more consistent and discriminative similarity ordering.
-Finally, the \emph{discriminant ratio (J)} increases dramatically from 0.3898 in the Baseline to nearly 2.0 in both proposed models. This substantial rise indicates a significantly more structured and separable latent space, demonstrating improved intra-class compactness and inter-class dispersion regardless of support size.
+\textbf{Comparison with Baseline:} While the ResNet-50 baseline achieves high Accuracy, it struggles with retrieval-specific metrics. Our proposed models demonstrate a substantial leap in \textbf{Recall}, \textbf{mAP} and the \textbf{discriminant ratio (J)} indicating that the Metric Learning approach is more effective at clustering similar logos than standard classification. The most striking difference is the \textbf{discriminant ratio (J)}, which rises from $0.3898$ in the baseline to nearly $2.0$, reflecting a more optimized and expansive latent space.
 
+\textbf{Few-Shot Support ($n=5$):} All models exhibit a performance gain as $n$ increases. By averaging the embeddings of five support samples, the system creates a stable brand prototype, filtering out "contextual noise" (unrelated background elements). This is most visible in the Contrastive model's Recall, which jumps from $0.4732$ to $0.6441$.
+
+\textbf{Comparison between Models Performance:} The Contrastive Cosine approach yields superior results compared to the Triplet model. This disparity is likely because the Triplet task is inherently more difficult to optimize; without the implementation of hard negative mining to select challenging samples, the Triplet loss struggles to refine decision boundaries as effectively as the Contrastive loss.
+
+\textbf{Threshold Optimization and Class Imbalance:} 
+The optimal similarity thresholds ($\tau$) were determined by maximizing the F1-score across a range of distance candidates. A notable discrepancy exists between the thresholds identified during validation ($\tau \approx 1.175$ for Triplet; $\tau \approx 0.59$ for Contrastive) and those utilized in the final evaluation ($\tau \approx 0.50$--$0.56$). This shift is primarily driven by the transition from a balanced validation environment to a retrieval-based testing scenario. While validation optimizes for a 1:1 positive-to-negative ratio, the testing phase reflects a realistic distribution where negative distractors vastly outnumber positive matches. In this imbalanced setting, maintaining a high F1-score requires a more stringent threshold to prevent the massive pool of negatives from generating enough False Positives to overwhelm the metric.\vspace{1em}
+
+\textbf{Analysis of Metric Variations and Model Impact:}
+
+\begin{itemize}
+
+\item \textbf{Classification Metrics (Accuracy, Precision, Recall, F1-Score):}
+The Baseline achieves the highest Accuracy, particularly at $n=5$, while both metric-learning models show a slight decrease, indicating a small trade-off in overall classification correctness. While the precision is not significantly impacted, the most significant improvement is observed in Recall, which increases substantially in both Triplet and Contrastive models, with the latter reaching 0.6441 at $n=5$ compared to 0.3493 for the Baseline, as a result, the F1-Score improves consistently. Overall, these variations indicate that metric learning enhances retrieval effectiveness despite a marginal reduction in Accuracy.
+
+\item \textbf{R@95p:}
+The Contrastive model improves R@95p at $n=1$ and remains very close to the Baseline at $n=5$, while the Triplet model shows slightly lower values. This suggests that the Contrastive loss better preserves high-confidence retrieval performance, maintaining strong recall under strict precision constraints.
+
+\item \textbf{mAP:}
+mAP improves noticeably with metric learning, particularly for the Contrastive model, which achieves the best overall performance at both $n=1$ and $n=5$. Since mAP reflects ranking quality across thresholds, this confirms that the learned embeddings produce a more consistent and discriminative similarity ordering.
+
+\item \textbf{discriminant ratio (J)}
+The J metric increases dramatically from 0.3898 in the Baseline to nearly 2.0 in both proposed models. This substantial rise indicates a significantly more structured and separable latent space, demonstrating improved intra-class compactness and inter-class dispersion regardless of support size.
+
+\end{itemize} 
 
 \subsection{Qualitative Analysis of Retrieval Behavior}
 
 The Contrastive Loss-based architecture proves to be the most effective of the project, achieving a mAP of \textbf{65.2\%}, demonstrating an abstraction capability that goes beyond simple pixel-matching. 
-Cases like \emph{Maille}\ref{fig:5} highlight how the network extracts invariant features, correctly associating logos on complex backgrounds (e.g., cans on a black background). 
-However, the addition of massive graphic elements, as in the case of \emph{Captain Morgan}\ref{fig:6}, can push the embedding beyond the tolerance threshold, masking the brand's identity and leading to false negatives.
+Cases like \emph{Maille} (Figure \ref{fig:5}) highlight how the network extracts invariant features, correctly associating logos on complex backgrounds (e.g., cans on a black background). 
+However, the addition of massive graphic elements, as in the case of \emph{Captain Morgan} (Figure \ref{fig:6}), can push the embedding beyond the tolerance threshold, masking the brand's identity and leading to false negatives.
 
 %---------------------------------------------------------------------------------------------------
 %Maille
-\begin{figure}[t]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{imm/img5.pdf}
     \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative) With a complex background.}
     \label{fig:5}
 \end{figure}
 %Captain Morgan
-\begin{figure}[t]
+\begin{figure}[H]
     \centering
     \includegraphics[width=1\linewidth]{imm/img6.pdf}
-    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative) with massive graphic elements.}
+    \caption{Qualitative analysis of retrieval behavior (Anchor, Positive, Negative) with added graphic elements.}
     \label{fig:6}
 \end{figure}
 
