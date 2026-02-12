@@ -1,4 +1,4 @@
-This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.10)  12 FEB 2026 12:27
+This is pdfTeX, Version 3.141592653-2.6-1.40.29 (MiKTeX 26.1) (preloaded format=pdflatex 2026.2.10)  12 FEB 2026 13:15
 entering extended mode
  restricted \write18 enabled.
  file:line:error style messages enabled.
@@ -378,7 +378,7 @@ Underfull \hbox (badness 1642) in paragraph at lines 94--101
 []\OT1/ptm/m/n/10 LogoDet-3K com-prises 3,000 logo cat-e-gories, with
  []
 
-[4321{C:/Users/ogger/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
+[1{C:/Users/ogger/AppData/Local/MiKTeX/fonts/map/pdftex/pdftex.map}{C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/enc/dvips/base/8r.enc}
 
 
  <./imm/1immintro.pdf>]
@@ -428,11 +428,16 @@ Underfull \hbox (badness 10000) in paragraph at lines 113--119
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
 
-Underfull \hbox (badness 1859) in paragraph at lines 126--128
-\OT1/ptm/m/n/10 are re-sized to $\OT1/cmr/m/n/10 224 \OMS/cmsy/m/n/10 ^^B \OT1/cmr/m/n/10 224$ \OT1/ptm/m/n/10 pix-els and nor-mal-ized us-
+Underfull \hbox (badness 2884) in paragraph at lines 126--128
+\OT1/ptm/m/n/10 ing \OT1/pcr/m/n/10 RandomResizedCrop\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 RandomPerspective\OT1/ptm/m/n/10 ,
  []
 
-[4322 <./imm/logodet3k_with_red_dots.pdf>]
+
+Underfull \hbox (badness 10000) in paragraph at lines 126--128
+\OT1/pcr/m/n/10 RandomHorizontalFlip\OT1/ptm/m/n/10 , \OT1/pcr/m/n/10 RandomRotation\OT1/ptm/m/n/10 ,
+ []
+
+[2 <./imm/logodet3k_with_red_dots.pdf>]
 LaTeX Font Info:    Trying to load font information for TS1+ptm on input line 152.
  (C:\Users\ogger\AppData\Local\Programs\MiKTeX\tex/latex/psnfss\ts1ptm.fd
 File: ts1ptm.fd 2001/06/04 font definitions for TS1/ptm.
@@ -446,7 +451,7 @@ Underfull \hbox (badness 2608) in paragraph at lines 185--185
 []|\OT1/ptm/m/n/10 Backbone LR Re-duc-tion
  []
 
-[4323]
+[3]
 <imm/img41.pdf, id=65, 167.62625pt x 303.1325pt>
 File: imm/img41.pdf Graphic file (type pdf)
 <use imm/img41.pdf>
@@ -465,7 +470,7 @@ Package pdftex.def Info: imm/img43.pdf  used on input line 274.
 
 Underfull \vbox (badness 2359) has occurred while \output is active []
 
- [4324 <./imm/img41.pdf> <./imm/img42.pdf>]
+ [4 <./imm/img41.pdf> <./imm/img42.pdf>]
 <imm/img44.pdf, id=78, 151.56625pt x 268.00125pt>
 File: imm/img44.pdf Graphic file (type pdf)
 <use imm/img44.pdf>
@@ -479,7 +484,7 @@ Underfull \hbox (badness 4518) in paragraph at lines 316--316
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4325 <./imm/img43.pdf> <./imm/img44.pdf>]
+ [5 <./imm/img43.pdf> <./imm/img44.pdf>]
 <imm/img431.pdf, id=94, 151.56625pt x 289.08pt>
 File: imm/img431.pdf Graphic file (type pdf)
 <use imm/img431.pdf>
@@ -498,7 +503,7 @@ Underfull \hbox (badness 1910) in paragraph at lines 417--417
 
 Underfull \vbox (badness 10000) has occurred while \output is active []
 
- [4326 <./imm/img431.pdf> <./imm/img433.pdf>] [4327]
+ [6 <./imm/img431.pdf> <./imm/img433.pdf>] [7]
 
 pdfTeX warning: pdflatex (file ./imm/img5.pdf): PDF inclusion: found PDF version <1.7>, but at most version <1.5> allowed
 <imm/img5.pdf, id=119, 963.6pt x 316.18124pt>
@@ -522,7 +527,7 @@ File: imm/img45.pdf Graphic file (type pdf)
 <use imm/img45.pdf>
 Package pdftex.def Info: imm/img45.pdf  used on input line 528.
 (pdftex.def)             Requested size: 142.283pt x 117.8235pt.
-(egpaper_final.bbl) [4328 <./imm/img5.pdf> <./imm/img6.pdf> <./imm/img45.pdf>] (egpaper_final.aux)
+(egpaper_final.bbl) [8 <./imm/img5.pdf> <./imm/img6.pdf> <./imm/img45.pdf>] (egpaper_final.aux)
  ***********
 LaTeX2e <2025-11-01>
 L3 programming layer <2026-01-19>
@@ -530,14 +535,14 @@ L3 programming layer <2026-01-19>
  ) 
 Here is how much of TeX's memory you used:
  11735 strings out of 467866
- 186552 string characters out of 5418325
- 605960 words of memory out of 5000000
+ 186528 string characters out of 5418325
+ 605918 words of memory out of 5000000
  40408 multiletter control sequences out of 15000+600000
  652452 words of font info for 94 fonts, out of 8000000 for 9000
  1141 hyphenation exceptions out of 8191
  75i,14n,79p,966b,551s stack positions out of 10000i,1000n,20000p,200000b,200000s
 <C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmmi10.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr10.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmr7.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy10.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/public/amsfonts/cm/cmsy7.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/urw/courier/ucrr8a.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmb8a.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmr8a.pfb><C:/Users/ogger/AppData/Local/Programs/MiKTeX/fonts/type1/urw/times/utmri8a.pfb>
-Output written on egpaper_final.pdf (8 pages, 1755139 bytes).
+Output written on egpaper_final.pdf (8 pages, 1755963 bytes).
 PDF statistics:
  189 PDF objects out of 1000 (max. 8388607)
  47 named destinations out of 1000 (max. 500000)

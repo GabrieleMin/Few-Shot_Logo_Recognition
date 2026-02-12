@@ -25,7 +25,7 @@
 
 % Pages are numbered in submission mode, and unnumbered in camera-ready
 %\ifcvprfinal\pagestyle{empty}\fi
-\setcounter{page}{4321}
+\setcounter{page}{1}
 \begin{document}
 
 %%%%%%%%% TITLE
@@ -33,8 +33,8 @@
 
 \author{Oggero Paolo\\
 s342937\\
-address:\\
-{\tt\small TODO: insert email address}
+email address:\\
+{\tt\small s342937@studenti.polito.it}
 % For a paper whose authors are all at the same institution,
 % omit the following lines up until the closing ``}''.
 % Additional authors and addresses can be added with ``\and'',
@@ -43,13 +43,13 @@ address:\\
 \and
 Cancemi Alessia\\
 s347156\\
-address\\
-{\tt\small TODO: insert email address}
+email address\\
+{\tt\small s347156@studenti.polito.it}
 \and
 Mincigrucci Gabriele\\
 s358987\\
-address\\
-{\tt\small TODO: insert email address}
+email address\\
+{\tt\small s358987@studenti.polito.it}
 }
 
 \maketitle
@@ -124,7 +124,7 @@ To meet the requirements of the implemented loss functions, two specific Dataset
 
 \subsection{Preprocessing and Data Augmentation}
 The original images have heterogeneous resolutions. In the loading module, the data is normalized and transformed to improve the model's robustness. This process involves \textbf{Resize and Normalization:} All images are resized to $224 \times 224$ pixels and normalized using the ImageNet mean and standard deviation, ensuring compatibility with the pre-trained weights of ResNet-50. 
-Subsequently, \textbf{Augmentation} is applied during training, transformations, including \texttt{RandomResizedCrop}, \texttt{RandomHorizontalFlip}, and \texttt{ColorJitter}. These techniques simulate the distortions typical of real-world logos (light variations, angled shots, etc.).
+Subsequently, \textbf{Augmentation} is applied during training, transformations, including \texttt{RandomResizedCrop}, \texttt{RandomPerspective}, \texttt{RandomHorizontalFlip}, \texttt{RandomRotation}, \texttt{RandomGrayscale}, and \texttt{ColorJitter}. These techniques simulate the distortions typical of real-world logos (light variations, angled shots, etc.).
 
 
 \section{Methods}
@@ -305,11 +305,11 @@ The evolution of testing on \textbf{Triplet Margin Loss} provided critical insig
         \hline
         Learning Rate (Head) & $1.0 \times 10^{-1} \to 2.0 \times 10^{-2}$ (Decay Factor: 0.2) \\
         \hline
-        Backbone LR Factor & $0.03$ (compared to the Head's LR) \\
+        Backbone LR & $0.03$ * (Head's LR) \\
         \hline
         Embedding Layer & MLP ($2048 \to 256 \to \text{BatchNorm1d} \to \text{ReLU} \to \text{Dropout}(p=0.3) \to 128$) \\
         \hline
-        Freeze Strategy & $4 \to 3$ (Sblocco all'epoca 15) \\
+        Freeze Strategy & $4 \to 3$ (at epoch 15) \\
         \hline
         Data Augmentation & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
         \hline
@@ -402,15 +402,15 @@ While the Euclidean-distance alternative showed less promising convergence and c
        \hline
        Margin & 0.2 \\
        \hline
-       Learning Rate & $1.0 \times 10^{-2}$ (Costante, Factor: 1) \\
+       Learning Rate & $1.0 \times 10^{-2}$ (Costant, Factor: 1) \\
        \hline
-       Backbone LR & Factor $0.25$ \\
+       Backbone LR & $0.25$ * (Head's LR)\\
        \hline
        Output Norm. & True \\
        \hline
        Embedding & MLP ($2048 \to 1024 \to \text{ReLU} \to 256$) \\
        \hline
-       Freeze Strat. & $4 \to 3$ (Sblocco all'epoca 15) \\
+       Freeze Strat. & $4 \to 3$ (at epoch 15) \\
        \hline
        Data Aug. & Resize ($224 \times 224$), RandomPerspective ($p=0.3$), RandomHorizontalFlip ($p=0.3$), RandomRotation ($\pm 15^\circ$), RandomGrayscale ($p=0.1$), ColorJitter, Normalize \\
        \hline
