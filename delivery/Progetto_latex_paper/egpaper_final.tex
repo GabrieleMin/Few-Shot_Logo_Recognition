@@ -89,7 +89,7 @@ To support training, a dynamic transfer learning management system based on prog
 
 \section{Data}
 For this project, we used the LogoDet-3K dataset\cite{wang2022logodet}, which currently represents one of the largest and most complex benchmarks for logo recognition. This work is based on the use of the LogoDet-3K dataset, publicly accessible via the repository: \url{ https://github.com/Wangjing1551/LogoDet-3K-Dataset}.
-we also share our pre-processed dataset at: \url{https://drive.google.com/file/d/1yFiHK_r6ae8Xs8uls8F-ccXHPpqVyh74/view?usp=sharing}.
+
 
 
 \subsection{Dataset Description}
@@ -117,6 +117,7 @@ The preparation pipeline, aimed at optimizing dataset integrity and loading effi
 \textbf{Static Indexing}: To accelerate data loading, a unique brand-to-index mapping was generated offline, injected directly into the XML files, and saved in a CSV lookup file for quick reference.
 \textbf{Brand-Wise Split}: The dataset was split offline, isolating 10\% of the brands for the test set, randomly selected from each category to guarantee the same data distribution. This separation at the class level (rather than at the individual image level) ensures rigorous open-set evaluation, testing the model on categories never encountered during training.
 At runtime, the system manages an online split of the remaining data using the getTrainValPaths function. This allows you to dynamically split the brands between Training and Validation (70/30 split for routine tests and 80/20 for final runs), ensuring that validation always occurs on classes not used for weight updating.
+we share our pre-processed dataset at: \url{https://drive.google.com/file/d/1yFiHK_r6ae8Xs8uls8F-ccXHPpqVyh74/view?usp=sharing}.
 
 \subsection{Sampling and Data Loading Strategies}
 To meet the requirements of the implemented loss functions, two specific Dataset classes were created:
@@ -171,10 +172,11 @@ The main metrics calculated in the validation loop are:
 
 \section{experiments}
 The experimental analysis consisted of a series of tests aimed at identifying the optimal combination of hyperparameters, following different transfer learning strategies.
+For clarity, the ranges of the hyperparameters used are shown in \ref{tab:hyper_ranges}.
 
 \begin{table}[H]
     \centering
-    \renewcommand{\arraystretch}{1.2}
+    \renewcommand{\arraystretch}{1.1}
     \caption{Range of hyperparameters (Minimum - Maximum) observed across all experimental configurations.}
     \label{tab:hyper_ranges}
     \begin{tabularx}{\linewidth}{|X|c|c|}
